@@ -1,0 +1,19 @@
+<section class="sign-in">
+  <div class="sign-in__card">
+    <a routerLink="/" class="sign-in__back">&larr; Back to home</a>
+    <h1 class="sign-in__title">Sign in</h1>
+    <p class="sign-in__lead">
+      Use your Google account to post reviews and manage your profile. We never store a password.
+    </p>
+
+    @if (busy()) {
+      <p class="sign-in__status" aria-live="polite">Signing you in…</p>
+    }
+
+    <div #googleButton class="sign-in__google" aria-label="Google sign-in button"></div>
+
+    @if (errorMessage(); as msg) {
+      <p class="sign-in__error" role="alert">{{ msg }}</p>
+    }
+  </div>
+</section>

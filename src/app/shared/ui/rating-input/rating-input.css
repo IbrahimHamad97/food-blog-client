@@ -1,0 +1,46 @@
+.rating-input {
+  display: inline-flex;
+  gap: 0.25rem;
+}
+
+.rating-input__star {
+  padding: 0.125rem;
+  border: none;
+  background: none;
+  cursor: pointer;
+  line-height: 0;
+  border-radius: 0.25rem;
+  transition: transform var(--duration-ui) var(--ease-smooth);
+}
+
+.rating-input__star:hover:not(:disabled) {
+  transform: scale(1.08);
+}
+
+.rating-input__star:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.rating-input__star svg {
+  width: 1.75rem;
+  height: 1.75rem;
+  fill: var(--color-border);
+  transition: fill var(--duration-ui) var(--ease-smooth);
+}
+
+.rating-input__star--active svg {
+  fill: var(--color-accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

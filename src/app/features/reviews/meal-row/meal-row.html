@@ -1,0 +1,28 @@
+<fieldset class="meal-row" [formGroup]="group()">
+  <legend class="sr-only">Meal {{ index() + 1 }}</legend>
+  <p class="meal-row__title">Meal {{ index() + 1 }}</p>
+  <div class="meal-row__fields">
+    <label class="meal-row__field meal-row__field--name">
+      <span class="meal-row__label">Name</span>
+      <input type="text" formControlName="name" placeholder="e.g. Margherita pizza" />
+      @if (group().get('name')?.invalid && group().get('name')?.touched) {
+        <span class="meal-row__error">Name is required</span>
+      }
+    </label>
+    <label class="meal-row__field meal-row__field--qty">
+      <span class="meal-row__label">Qty</span>
+      <input type="number" formControlName="quantity" min="1" step="1" />
+    </label>
+    <label class="meal-row__field meal-row__field--price">
+      <span class="meal-row__label">Price ({{ pricePrefix() }})</span>
+      <input type="number" formControlName="price" min="0" step="0.01" placeholder="Optional" />
+    </label>
+    <label class="meal-row__field meal-row__field--notes">
+      <span class="meal-row__label">Notes</span>
+      <input type="text" formControlName="notes" placeholder="Optional" />
+    </label>
+  </div>
+  @if (canRemove()) {
+    <button type="button" class="meal-row__remove" (click)="remove.emit()">Remove</button>
+  }
+</fieldset>

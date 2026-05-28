@@ -1,0 +1,465 @@
+.review-detail {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+.review-detail__loading {
+  margin: 2rem 0;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+}
+
+.review-detail__top-bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.review-detail__back {
+  display: inline-block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.review-detail__back:hover {
+  color: var(--color-accent);
+}
+
+.review-detail__owner-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.review-detail__action {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.4375rem 0.875rem;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    color var(--duration-ui) var(--ease-smooth),
+    border-color var(--duration-ui) var(--ease-smooth),
+    background-color var(--duration-ui) var(--ease-smooth);
+}
+
+.review-detail__action--edit {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.review-detail__action--edit:hover {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+.review-detail__action--delete {
+  border: 1px solid color-mix(in srgb, #dc2626 45%, var(--color-border));
+  color: #dc2626;
+  background-color: color-mix(in srgb, #dc2626 8%, var(--color-surface));
+}
+
+.review-detail__action--delete:hover {
+  border-color: #dc2626;
+  background-color: color-mix(in srgb, #dc2626 14%, var(--color-surface));
+}
+
+.review-detail__dialog {
+  width: min(24rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
+  max-height: min(90vh, 32rem);
+  padding: 0;
+  margin: 0;
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  box-shadow: var(--shadow-md, 0 16px 40px rgb(0 0 0 / 35%));
+}
+
+/* Center on screen (dialog sits inside article layout otherwise). */
+.review-detail__dialog:modal,
+.review-detail__dialog[open] {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  overflow: auto;
+}
+
+.review-detail__dialog::backdrop {
+  background-color: rgb(0 0 0 / 55%);
+}
+
+.review-detail__dialog-panel {
+  padding: 1.25rem 1.25rem 1rem;
+}
+
+.review-detail__dialog-title {
+  margin: 0 0 0.5rem;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+
+.review-detail__dialog-text {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  line-height: 1.5;
+  color: var(--color-muted);
+}
+
+.review-detail__dialog-error {
+  margin: 0 0 0.75rem;
+  font-size: 0.8125rem;
+  color: #dc2626;
+}
+
+.review-detail__dialog-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 0.5rem;
+}
+
+.review-detail__dialog-btn {
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.review-detail__dialog-btn--cancel {
+  border: 1px solid var(--color-border);
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.review-detail__dialog-btn--confirm {
+  border: none;
+  color: #fff;
+  background-color: #dc2626;
+}
+
+.review-detail__dialog-btn:disabled {
+  opacity: 0.65;
+  cursor: not-allowed;
+}
+
+/* Hero: gallery left, meta right on wide screens */
+.review-detail__hero {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  margin-bottom: 2rem;
+}
+
+@media (min-width: 48rem) {
+  .review-detail__hero--with-photos {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 1.5rem 2rem;
+    align-items: start;
+  }
+
+  .review-detail__hero--with-photos app-review-photo-gallery {
+    max-width: 20rem;
+  }
+}
+
+.review-detail__header {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.review-detail__title {
+  margin: 0.5rem 0 0;
+  font-size: 1.875rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+  line-height: 1.2;
+}
+
+.review-detail__place-label {
+  margin: 0.5rem 0 0;
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--color-muted);
+}
+
+.review-detail__place {
+  margin: 0.125rem 0 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--color-text);
+}
+
+.review-detail__visit {
+  margin: 0.35rem 0 0;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+}
+
+.review-detail__likes {
+  margin-top: 0.75rem;
+}
+
+.review-detail__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.375rem;
+  margin: 0.5rem 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.review-detail__tags li {
+  padding: 0.2rem 0.625rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  background-color: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  color: var(--color-accent);
+}
+
+.review-detail__section {
+  margin-bottom: 2rem;
+}
+
+.review-detail__section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem 1.25rem;
+  margin-bottom: 1rem;
+}
+
+.review-detail__section-title {
+  margin: 0 0 1rem;
+  font-size: 1.125rem;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+
+.review-detail__section-head .review-detail__section-title {
+  margin: 0;
+}
+
+.review-detail__order-total {
+  display: flex;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.2;
+}
+
+.review-detail__order-total-label {
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.review-detail__order-total-amount {
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-accent);
+}
+
+/* Meals — card grid */
+.meal-card-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+@media (min-width: 40rem) {
+  .meal-card-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+.meal-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  min-height: 7.5rem;
+  padding: 1rem 1.125rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  background-color: color-mix(in srgb, var(--color-surface) 92%, var(--color-border));
+  box-shadow: var(--shadow-sm);
+}
+
+.meal-card__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.meal-card__icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.625rem;
+  color: var(--color-accent);
+  background-color: var(--color-accent-soft);
+}
+
+.meal-card__icon svg {
+  width: 1.375rem;
+  height: 1.375rem;
+}
+
+.meal-card__price {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: var(--color-text);
+  white-space: nowrap;
+}
+
+.meal-card__name {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+.meal-card__qty {
+  margin-left: 0.2rem;
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.meal-card__notes {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--color-muted);
+}
+
+/* Nutrition — icon cards */
+.review-detail__nutrition-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.5rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nutrient-card {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.625rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  background-color: color-mix(in srgb, var(--color-surface) 94%, var(--color-border));
+}
+
+.nutrient-card__icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 2rem;
+  height: 2rem;
+  color: var(--color-accent);
+}
+
+.nutrient-card__icon svg {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.nutrient-card__content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.0625rem;
+  min-width: 0;
+}
+
+.nutrient-card__label {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-muted);
+  line-height: 1.2;
+}
+
+.nutrient-card__value {
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--color-text);
+  line-height: 1.25;
+  word-break: break-word;
+}
+
+/* Review write-up */
+.review-detail__writeup {
+  padding: 1.25rem 1.25rem 1.5rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.875rem;
+  background-color: color-mix(in srgb, var(--color-surface) 96%, var(--color-border));
+}
+
+.review-detail__body {
+  margin: 0;
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  color: var(--color-text);
+}
+
+.review-detail__byline {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 0.35rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--color-border);
+}
+
+.review-detail__byline-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.review-detail__author {
+  font-size: 0.9375rem;
+  font-weight: 700;
+  color: var(--color-accent);
+  text-decoration: none;
+}
+
+.review-detail__author:hover {
+  text-decoration: underline;
+}
+
+.review-detail__missing {
+  text-align: center;
+  padding: 3rem 1rem;
+}

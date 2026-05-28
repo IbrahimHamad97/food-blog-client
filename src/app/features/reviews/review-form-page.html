@@ -1,0 +1,210 @@
+<section class="review-form">
+  <header class="review-form__header">
+    @if (isEditMode()) {
+      <h1>Edit review</h1>
+      <p>Update your visit details, photos, and write-up.</p>
+    } @else {
+      <h1>Post a review</h1>
+      <p>Share where you ate, what you ordered, and how it was.</p>
+    }
+  </header>
+
+  @if (loadingReview()) {
+    <p class="review-form__loading">Loading review…</p>
+  } @else if (loadError(); as err) {
+    <p class="review-form__submit-error" role="alert">{{ err }}</p>
+  } @else {
+  <div class="review-form__dev-fill">
+    <button type="button" class="review-form__dev-btn" (click)="fillDevFull()">Fill sample (full)</button>
+    <button type="button" class="review-form__dev-btn" (click)="fillDevMinimal()">Fill sample (min)</button>
+  </div>
+
+  <form class="review-form__body" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <fieldset class="review-form__section">
+      <legend>Visit</legend>
+
+      <label class="review-form__field">
+        <span>Restaurant / place</span>
+        <input type="text" formControlName="placeName" placeholder="e.g. Via Roma Pizzeria" />
+        @if (form.get('placeName')?.invalid && form.get('placeName')?.touched) {
+          <span class="review-form__error">Place name is required</span>
+        }
+      </label>
+
+      <div class="review-form__field">
+        <span>Order type</span>
+        <div class="choice-group" role="radiogroup" aria-label="Order type">
+          <label class="choice-group__option">
+            <input type="radio" formControlName="serviceType" value="dine_in" />
+            <span>Dine-in</span>
+          </label>
+          <label class="choice-group__option">
+            <input type="radio" formControlName="serviceType" value="delivery" />
+            <span>Delivery</span>
+          </label>
+        </div>
+      </div>
+
+      <label class="review-form__field">
+        <span>Party size <em class="review-form__optional">(optional)</em></span>
+        <input
+          type="number"
+          formControlName="partySize"
+          min="1"
+          placeholder="Including you"
+        />
+        @if (form.get('partySize')?.invalid && form.get('partySize')?.touched) {
+          <span class="review-form__error">Use at least 1 person</span>
+        }
+      </label>
+
+      <div class="review-form__field">
+        <span>Currency for meal prices</span>
+        <div class="choice-group" role="radiogroup" aria-label="Currency">
+          <label class="choice-group__option">
+            <input type="radio" formControlName="currency" value="USD" />
+            <span>USD ($)</span>
+          </label>
+          <label class="choice-group__option">
+            <input type="radio" formControlName="currency" value="QAR" />
+            <span>QAR</span>
+          </label>
+        </div>
+      </div>
+    </fieldset>
+
+    <fieldset class="review-form__section">
+      <legend>What you ordered</legend>
+
+      <div class="review-form__meals">
+        @for (meal of meals.controls; track $index) {
+          <app-meal-row
+            [group]="mealGroupAt($index)"
+            [index]="$index"
+            [canRemove]="meals.length > 1"
+            [currency]="form.get('currency')?.value ?? 'USD'"
+            (remove)="removeMeal($index)"
+          />
+        }
+      </div>
+
+      @if (canAddMeal()) {
+        <button type="button" class="review-form__add-meal" (click)="addMeal()">
+          + Add another meal
+        </button>
+      }
+
+      @if (orderTotalLabel(); as total) {
+        <p class="review-form__total">Order total: <strong>{{ total }}</strong></p>
+      }
+    </fieldset>
+
+    <fieldset class="review-form__section">
+      <legend>Your review</legend>
+
+      <label class="review-form__field">
+        <span>Title</span>
+        <input type="text" formControlName="title" placeholder="Headline for your visit" />
+        @if (form.get('title')?.invalid && form.get('title')?.touched) {
+          <span class="review-form__error">Title is required</span>
+        }
+      </label>
+
+      <div class="review-form__field">
+        <span>Overall rating</span>
+        <app-rating-input formControlName="rating" />
+        @if (form.get('rating')?.invalid && form.get('rating')?.touched) {
+          <span class="review-form__error">Pick a rating from 1 to 5 stars</span>
+        }
+      </div>
+
+      <label class="review-form__field">
+        <span>Review</span>
+        <textarea
+          formControlName="body"
+          rows="6"
+          placeholder="What stood out? Atmosphere, service, flavors…"
+        ></textarea>
+        @if (form.get('body')?.invalid && form.get('body')?.touched) {
+          <span class="review-form__error">Review text is required</span>
+        }
+      </label>
+
+      <label class="review-form__field review-form__field--tags">
+        <span>
+          Cuisines <em class="review-form__optional">(optional)</em>
+        </span>
+        <app-tag-multi-select
+          formControlName="cuisineTags"
+          [options]="cuisineTagOptions"
+          [maxTags]="maxTags"
+          placeholder="Select cuisines…"
+          ariaLabel="Cuisines"
+        />
+      </label>
+
+      <label class="review-form__field review-form__field--tags">
+        <span>
+          Food types <em class="review-form__optional">(optional)</em>
+        </span>
+        <app-tag-multi-select
+          formControlName="foodTypeTags"
+          [options]="foodTypeTagOptions"
+          [maxTags]="maxTags"
+          placeholder="Select food types…"
+          ariaLabel="Food types"
+        />
+      </label>
+
+      <div class="review-form__field">
+        <span>Photos <em class="review-form__required-hint">(required, up to 5)</em></span>
+        <app-image-upload-grid #uploadGrid [(images)]="imageUrls" />
+        @if (imagesError(); as imgErr) {
+          <span class="review-form__error">{{ imgErr }}</span>
+        }
+      </div>
+    </fieldset>
+
+    <fieldset class="review-form__section" formGroupName="nutrition">
+      <legend>Nutrition <em class="review-form__optional">(optional)</em></legend>
+      <p class="review-form__nutrition-hint">Add any values you care about — leave blanks empty.</p>
+      <div class="review-form__nutrition-grid">
+        @for (field of nutritionFields; track field.key) {
+          <label class="review-form__nutrition-field">
+            <span>{{ field.label }}</span>
+            <input
+              type="text"
+              [formControlName]="field.key"
+              [placeholder]="field.placeholder"
+            />
+          </label>
+        }
+      </div>
+    </fieldset>
+
+    @if (submitError(); as err) {
+      <p class="review-form__submit-error" role="alert">{{ err }}</p>
+    }
+
+    <div class="review-form__actions">
+      <a
+        [routerLink]="isEditMode() ? ['/reviews', editReviewId()] : ['/']"
+        class="review-form__cancel"
+      >
+        Cancel
+      </a>
+      <button
+        type="submit"
+        class="review-form__submit"
+        [disabled]="submitting() || uploadGrid.hasUploadsInProgress()"
+      >
+        @if (submitting()) {
+          {{ isEditMode() ? 'Saving…' : 'Publishing…' }}
+        } @else {
+          {{ isEditMode() ? 'Save changes' : 'Publish review' }}
+        }
+      </button>
+    </div>
+  </form>
+  }
+</section>

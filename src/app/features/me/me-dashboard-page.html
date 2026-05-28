@@ -1,0 +1,96 @@
+@if (user(); as u) {
+  <div class="me-dash">
+    <header class="me-dash__profile">
+      <img
+        class="me-dash__avatar"
+        [src]="avatarUrl()"
+        [alt]="u.name + ' avatar'"
+        width="80"
+        height="80"
+        (error)="onAvatarError($event)"
+      />
+      <div class="me-dash__profile-text">
+        <h1 class="me-dash__title">My dashboard</h1>
+        <p class="me-dash__name">{{ u.name }}</p>
+        <p class="me-dash__email">{{ u.email }}</p>
+      </div>
+      <a routerLink="/reviews/new" class="me-dash__primary-cta">Post a review</a>
+    </header>
+
+    <ul class="me-dash__stats" aria-label="Your activity">
+      <li class="me-dash__stat">
+        <span class="me-dash__stat-value">{{ myReviewsTotal() }}</span>
+        <span class="me-dash__stat-label">Reviews</span>
+      </li>
+      <li class="me-dash__stat">
+        <span class="me-dash__stat-value">0</span>
+        <span class="me-dash__stat-label">Likes</span>
+      </li>
+      <li class="me-dash__stat">
+        <span class="me-dash__stat-value">0</span>
+        <span class="me-dash__stat-label">Collections</span>
+      </li>
+    </ul>
+
+    <section class="me-dash__section" aria-labelledby="me-reviews">
+      <div class="me-dash__section-head">
+        <h2 id="me-reviews" class="me-dash__section-title">My reviews</h2>
+        <p class="me-dash__section-desc">Restaurant visits you have published.</p>
+      </div>
+
+      @if (myReviewsLoading()) {
+        <p class="me-dash__status">Loading your reviews…</p>
+      } @else if (myReviewsError(); as err) {
+        <p class="me-dash__status me-dash__status--error">{{ err }}</p>
+      } @else if (myReviews().length === 0) {
+        <div class="me-dash__empty">
+          <span class="me-dash__empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" /></svg>
+          </span>
+          <p class="me-dash__empty-title">No reviews yet</p>
+          <p class="me-dash__empty-hint">Share your first meal — photos, dishes, and what stood out.</p>
+          <a routerLink="/reviews/new" class="me-dash__empty-cta">Post a review</a>
+        </div>
+      } @else {
+        <div class="me-dash__review-grid">
+          @for (review of myReviews(); track review.id) {
+            <app-review-card [review]="review" layout="grid" />
+          }
+        </div>
+        <app-pagination-bar
+          [page]="myReviewsPage()"
+          [totalPages]="myReviewsTotalPages()"
+          [disabled]="myReviewsLoading()"
+          (pageChange)="onMyReviewsPageChange($event)"
+        />
+      }
+    </section>
+
+    @for (section of sections; track section.id) {
+      <section class="me-dash__section" [attr.aria-labelledby]="'me-' + section.id">
+        <div class="me-dash__section-head">
+          <h2 [id]="'me-' + section.id" class="me-dash__section-title">{{ section.title }}</h2>
+          <p class="me-dash__section-desc">{{ section.description }}</p>
+        </div>
+
+        <div class="me-dash__empty">
+          <span class="me-dash__empty-icon" aria-hidden="true">
+            @switch (section.id) {
+              @case ('likes') {
+                <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" fill="none" stroke="currentColor" stroke-width="1.75" /></svg>
+              }
+              @default {
+                <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" /></svg>
+              }
+            }
+          </span>
+          <p class="me-dash__empty-title">{{ section.emptyTitle }}</p>
+          <p class="me-dash__empty-hint">{{ section.emptyHint }}</p>
+          @if (section.ctaLabel && section.ctaLink) {
+            <a [routerLink]="section.ctaLink" class="me-dash__empty-cta">{{ section.ctaLabel }}</a>
+          }
+        </div>
+      </section>
+    }
+  </div>
+}

@@ -1,0 +1,85 @@
+<div class="photo-gallery">
+  <div
+    class="photo-gallery__stage"
+    role="button"
+    tabindex="0"
+    (click)="onStageClick($event)"
+    (keydown)="onStageKeydown($event)"
+    [attr.aria-label]="'View full size: ' + altPrefix() + ' ' + (activeIndex() + 1)"
+  >
+    <img
+      class="photo-gallery__img"
+      [src]="currentUrl()"
+      [alt]="altPrefix() + ' ' + (activeIndex() + 1)"
+      loading="lazy"
+      draggable="false"
+    />
+
+    @if (hasMultiple()) {
+      <span class="photo-gallery__counter">{{ slideLabel() }}</span>
+      <button
+        type="button"
+        class="photo-gallery__nav photo-gallery__nav--prev"
+        aria-label="Previous photo"
+        (mousedown)="$event.preventDefault()"
+        (click)="prev($event)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+      <button
+        type="button"
+        class="photo-gallery__nav photo-gallery__nav--next"
+        aria-label="Next photo"
+        (mousedown)="$event.preventDefault()"
+        (click)="next($event)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+    }
+  </div>
+</div>
+
+@if (lightboxOpen()) {
+  <div
+    class="photo-lightbox"
+    role="dialog"
+    aria-modal="true"
+    aria-label="Expanded photo"
+    (click)="closeLightbox()"
+    (keydown)="onLightboxKeydown($event)"
+    tabindex="-1"
+  >
+    <button type="button" class="photo-lightbox__close" aria-label="Close" (click)="closeLightbox()">
+      <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+    </button>
+    @if (hasMultiple()) {
+      <button
+        type="button"
+        class="photo-lightbox__nav photo-lightbox__nav--prev"
+        aria-label="Previous"
+        (mousedown)="$event.preventDefault()"
+        (click)="prev($event)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+    }
+    <img
+      class="photo-lightbox__img"
+      [src]="currentUrl()"
+      [alt]="altPrefix()"
+      (click)="$event.stopPropagation()"
+    />
+    @if (hasMultiple()) {
+      <button
+        type="button"
+        class="photo-lightbox__nav photo-lightbox__nav--next"
+        aria-label="Next"
+        (mousedown)="$event.preventDefault()"
+        (click)="next($event)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M9 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" /></svg>
+      </button>
+      <span class="photo-lightbox__counter">{{ slideLabel() }}</span>
+    }
+  </div>
+}

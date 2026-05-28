@@ -1,0 +1,314 @@
+@if (loading()) {
+  <p class="review-detail__loading">Loading review…</p>
+} @else if (review(); as r) {
+  <article class="review-detail">
+    <div class="review-detail__top-bar">
+      <a routerLink="/" class="review-detail__back">&larr; Back to home</a>
+      @if (isOwner()) {
+        <div class="review-detail__owner-actions">
+          <a [routerLink]="['/reviews', r.id, 'edit']" class="review-detail__action review-detail__action--edit">
+            Edit review
+          </a>
+          <button
+            type="button"
+            class="review-detail__action review-detail__action--delete"
+            (click)="openDeleteDialog()"
+          >
+            Delete
+          </button>
+        </div>
+      }
+    </div>
+
+    <div
+      class="review-detail__hero"
+      [class.review-detail__hero--with-photos]="r.imageUrls.length > 0"
+    >
+      @if (r.imageUrls.length) {
+        <app-review-photo-gallery [imageUrls]="r.imageUrls" [altPrefix]="r.placeName" />
+      }
+
+      <header class="review-detail__header">
+        <app-rating-stars [rating]="r.rating" />
+        <h1 class="review-detail__title">{{ r.title }}</h1>
+        <p class="review-detail__place-label">Restaurant</p>
+        <p class="review-detail__place">{{ r.placeName }}</p>
+        <p class="review-detail__visit">
+          {{ serviceLabel(r.serviceType) }}
+          @if (r.partySize) {
+            <span> · {{ r.partySize }} {{ r.partySize === 1 ? 'person' : 'people' }}</span>
+          }
+        </p>
+        @if (allTags(r).length) {
+          <ul class="review-detail__tags">
+            @for (tag of allTags(r); track tag) {
+              <li>{{ tag }}</li>
+            }
+          </ul>
+        }
+        <div class="review-detail__likes">
+          <app-review-like-button
+            [reviewId]="r.id"
+            [authorId]="r.author.id"
+            [likeCount]="r.likeCount"
+          />
+        </div>
+      </header>
+    </div>
+
+    @if (r.meals.length) {
+      <section class="review-detail__section" aria-labelledby="meals-heading">
+        <div class="review-detail__section-head">
+          <h2 id="meals-heading" class="review-detail__section-title">What was ordered</h2>
+          @if (r.totalAmount != null) {
+            <p class="review-detail__order-total">
+              <span class="review-detail__order-total-label">Total</span>
+              <span class="review-detail__order-total-amount">{{
+                formatPrice(r.totalAmount, r.currency)
+              }}</span>
+            </p>
+          }
+        </div>
+        <ul class="meal-card-grid">
+          @for (meal of r.meals; track $index) {
+            <li class="meal-card">
+              <div class="meal-card__top">
+                <span class="meal-card__icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24">
+                    <path
+                      d="M8 3v2m8-2v2M5 9h14M6 9v10a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V9"
+                      fill="none"
+                      stroke="currentColor"
+                      stroke-width="1.75"
+                      stroke-linecap="round"
+                    />
+                  </svg>
+                </span>
+                @if (mealLineTotal(meal); as lineTotal) {
+                  <span class="meal-card__price">{{ formatPrice(lineTotal, r.currency) }}</span>
+                }
+              </div>
+              <h3 class="meal-card__name">
+                {{ meal.name }}
+                @if (meal.quantity > 1) {
+                  <span class="meal-card__qty">×{{ meal.quantity }}</span>
+                }
+              </h3>
+              @if (meal.notes) {
+                <p class="meal-card__notes">{{ meal.notes }}</p>
+              }
+            </li>
+          }
+        </ul>
+      </section>
+    }
+
+    @if (r.nutrition; as nutrition) {
+      @if (nutritionEntries(nutrition).length) {
+        <section class="review-detail__section" aria-labelledby="nutrition-heading">
+          <h2 id="nutrition-heading" class="review-detail__section-title">Nutrition</h2>
+          <ul class="review-detail__nutrition-grid">
+            @for (item of nutritionEntries(nutrition); track item.key) {
+              <li class="nutrient-card">
+                <span class="nutrient-card__icon" aria-hidden="true">
+                  @switch (item.icon) {
+                    @case ('calories') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 2c2 4 6 5 6 10a6 6 0 1 1-12 0c0-5 4-6 6-10z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                      </svg>
+                    }
+                    @case ('protein') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M8 21l4-18 4 18M6 9h12"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    }
+                    @case ('carbs') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M4 14h16M6 14c0-3 2-6 6-6s6 3 6 6"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    }
+                    @case ('fat') {
+                      <svg viewBox="0 0 24 24">
+                        <ellipse
+                          cx="12"
+                          cy="13"
+                          rx="7"
+                          ry="5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                        <path
+                          d="M8 8c0-2 1.8-4 4-4s4 2 4 4"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                      </svg>
+                    }
+                    @case ('fiber') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 3v18M8 7c-2 1-3 3-3 5M16 7c2 1 3 3 3 5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    }
+                    @case ('sugar') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 3v3M8 8l8 8M16 8l-8 8"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                        <circle cx="12" cy="12" r="2" fill="currentColor" />
+                      </svg>
+                    }
+                    @case ('sodium') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M6 18h12M8 14h8M10 10h4M11 6h2"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    }
+                    @case ('saturatedFat') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 4c3 0 5 2 5 5v8H7V9c0-3 2-5 5-5z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                      </svg>
+                    }
+                    @case ('allergens') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M12 9v4M12 17h.01"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="2"
+                          stroke-linecap="round"
+                        />
+                        <path
+                          d="M10.3 3.7 2.6 17a2 2 0 0 0 1.7 3h15.4a2 2 0 0 0 1.7-3L13.7 3.7a2 2 0 0 0-3.4 0z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                      </svg>
+                    }
+                    @case ('notes') {
+                      <svg viewBox="0 0 24 24">
+                        <path
+                          d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                        <path
+                          d="M14 2v6h6M8 13h8M8 17h5"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                          stroke-linecap="round"
+                        />
+                      </svg>
+                    }
+                    @default {
+                      <svg viewBox="0 0 24 24">
+                        <circle
+                          cx="12"
+                          cy="12"
+                          r="9"
+                          fill="none"
+                          stroke="currentColor"
+                          stroke-width="1.75"
+                        />
+                      </svg>
+                    }
+                  }
+                </span>
+                <div class="nutrient-card__content">
+                  <span class="nutrient-card__label">{{ item.label }}</span>
+                  <span class="nutrient-card__value">{{ item.value }}</span>
+                </div>
+              </li>
+            }
+          </ul>
+        </section>
+      }
+    }
+
+    <section class="review-detail__writeup" aria-labelledby="writeup-heading">
+      <h2 id="writeup-heading" class="review-detail__section-title">Review</h2>
+      <p class="review-detail__body">{{ r.body }}</p>
+      <footer class="review-detail__byline">
+        <span class="review-detail__byline-label">Written by</span>
+        <a class="review-detail__author" [routerLink]="['/users', r.author.id]">{{
+          r.author.name
+        }}</a>
+      </footer>
+    </section>
+
+    <dialog #deleteDialog class="review-detail__dialog" (cancel)="closeDeleteDialog()">
+      <form class="review-detail__dialog-panel" method="dialog" (submit)="$event.preventDefault(); confirmDelete()">
+        <h2 class="review-detail__dialog-title">Delete this review?</h2>
+        <p class="review-detail__dialog-text">
+          <strong>{{ r.title }}</strong> at {{ r.placeName }} will be removed permanently. This cannot be undone.
+        </p>
+        @if (deleteError(); as err) {
+          <p class="review-detail__dialog-error" role="alert">{{ err }}</p>
+        }
+        <div class="review-detail__dialog-actions">
+          <button
+            type="button"
+            class="review-detail__dialog-btn review-detail__dialog-btn--cancel"
+            [disabled]="deleting()"
+            (click)="closeDeleteDialog()"
+          >
+            Cancel
+          </button>
+          <button
+            type="submit"
+            class="review-detail__dialog-btn review-detail__dialog-btn--confirm"
+            [disabled]="deleting()"
+          >
+            {{ deleting() ? 'Deleting…' : 'Delete review' }}
+          </button>
+        </div>
+      </form>
+    </dialog>
+  </article>
+} @else {
+  <div class="review-detail__missing">
+    <h1>Review not found</h1>
+    <a routerLink="/">Return home</a>
+  </div>
+}

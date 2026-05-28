@@ -1,0 +1,62 @@
+<div class="tag-multi-select">
+  <div class="tag-multi-select__control">
+    <button
+      type="button"
+      class="tag-multi-select__trigger"
+      [class.tag-multi-select__trigger--open]="open()"
+      [class.tag-multi-select__trigger--filled]="selected().length"
+      [disabled]="disabled()"
+      [attr.aria-expanded]="open()"
+      [attr.aria-haspopup]="'listbox'"
+      [attr.aria-label]="ariaLabel()"
+      (click)="toggleOpen($event)"
+    >
+      <span class="tag-multi-select__trigger-text">{{ triggerLabel() }}</span>
+      <svg class="tag-multi-select__chevron" viewBox="0 0 20 20" aria-hidden="true">
+        <path d="M5.5 7.5 10 12l4.5-4.5" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </button>
+
+    @if (open()) {
+      <div class="tag-multi-select__panel" role="listbox" [attr.aria-label]="ariaLabel()">
+        @for (option of options(); track option) {
+          <button
+            type="button"
+            class="tag-multi-select__option"
+            role="option"
+            [class.tag-multi-select__option--selected]="isSelected(option)"
+            [attr.aria-selected]="isSelected(option)"
+            (click)="toggleOption(option)"
+          >
+            <span class="tag-multi-select__option-label">{{ option }}</span>
+            <span class="tag-multi-select__check-slot" aria-hidden="true">
+              @if (isSelected(option)) {
+                <svg class="tag-multi-select__check" viewBox="0 0 20 20">
+                  <path d="m4.5 10.5 3.5 3.5 7.5-7.5" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+                </svg>
+              }
+            </span>
+          </button>
+        }
+      </div>
+    }
+  </div>
+
+  @if (selected().length) {
+    <div class="tag-multi-select__chips" [attr.aria-label]="'Selected ' + ariaLabel()">
+      @for (tag of selected(); track tag) {
+        <button
+          type="button"
+          class="tag-multi-select__chip"
+          (click)="removeTag(tag, $event)"
+        >
+          <span>{{ tag }}</span>
+          <svg class="tag-multi-select__chip-remove" viewBox="0 0 20 20" aria-hidden="true">
+            <path d="M6 6l8 8M14 6l-8 8" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" />
+          </svg>
+          <span class="sr-only">Remove {{ tag }}</span>
+        </button>
+      }
+    </div>
+  }
+</div>

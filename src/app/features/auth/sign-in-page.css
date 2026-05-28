@@ -1,0 +1,65 @@
+.sign-in {
+  display: flex;
+  justify-content: center;
+  padding: 2rem 0 3rem;
+}
+
+.sign-in__card {
+  width: 100%;
+  max-width: 26rem;
+  padding: 2rem 1.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 1.25rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md);
+}
+
+.sign-in__back {
+  display: inline-block;
+  margin-bottom: 1.25rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-muted);
+  text-decoration: none;
+}
+
+.sign-in__back:hover {
+  color: var(--color-accent);
+}
+
+.sign-in__title {
+  margin: 0 0 0.5rem;
+  font-size: 1.75rem;
+  font-weight: 800;
+  letter-spacing: -0.03em;
+}
+
+.sign-in__lead {
+  margin: 0 0 1.5rem;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-muted);
+}
+
+.sign-in__google {
+  display: flex;
+  justify-content: center;
+  min-height: 44px;
+}
+
+.sign-in__status {
+  margin: 0 0 1rem;
+  font-size: 0.875rem;
+  color: var(--color-muted);
+  text-align: center;
+}
+
+.sign-in__error {
+  margin: 1rem 0 0;
+  padding: 0.75rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1.45;
+  color: #b91c1c;
+  background-color: rgba(185, 28, 28, 0.08);
+}

@@ -1,0 +1,196 @@
+.tag-multi-select {
+  display: flex;
+  flex-direction: column;
+  gap: 0.875rem;
+}
+
+/* Global styles scale buttons on :active — skip for this control */
+.tag-multi-select button {
+  transition:
+    color var(--duration-ui) var(--ease-smooth),
+    background-color var(--duration-ui) var(--ease-smooth),
+    border-color var(--duration-ui) var(--ease-smooth),
+    box-shadow var(--duration-ui) var(--ease-smooth);
+}
+
+.tag-multi-select button:active:not(:disabled) {
+  transform: none;
+}
+
+.tag-multi-select__control {
+  position: relative;
+}
+
+.tag-multi-select__trigger {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.75rem 0.875rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--color-muted);
+  background-color: var(--color-surface);
+  cursor: pointer;
+  transition:
+    border-color var(--duration-ui) var(--ease-smooth),
+    color var(--duration-ui) var(--ease-smooth);
+}
+
+.tag-multi-select__trigger:hover:not(:disabled) {
+  border-color: color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+}
+
+.tag-multi-select__trigger:focus-visible,
+.tag-multi-select__trigger--open {
+  border-color: var(--color-accent);
+  outline: 2px solid color-mix(in srgb, var(--color-accent) 35%, transparent);
+  outline-offset: 2px;
+}
+
+.tag-multi-select__trigger--filled {
+  color: var(--color-text);
+}
+
+.tag-multi-select__trigger:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.tag-multi-select__trigger-text {
+  min-width: 0;
+  text-align: left;
+}
+
+.tag-multi-select__chevron {
+  flex-shrink: 0;
+  width: 1.125rem;
+  height: 1.125rem;
+  color: var(--color-muted);
+}
+
+.tag-multi-select__trigger--open .tag-multi-select__chevron {
+  transform: rotate(180deg);
+}
+
+.tag-multi-select__panel {
+  position: absolute;
+  z-index: 20;
+  top: calc(100% + 0.5rem);
+  left: 0;
+  right: 0;
+  max-height: 14rem;
+  overflow-y: auto;
+  padding: 0.375rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  background-color: var(--color-surface);
+  box-shadow: var(--shadow-md, 0 8px 24px rgb(0 0 0 / 18%));
+}
+
+.tag-multi-select__option {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  width: 100%;
+  padding: 0.625rem 0.75rem;
+  border: none;
+  border-radius: 0.4375rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  color: var(--color-text);
+  background: none;
+  cursor: pointer;
+  text-align: left;
+  transition:
+    background-color var(--duration-ui) var(--ease-smooth),
+    color var(--duration-ui) var(--ease-smooth);
+}
+
+.tag-multi-select__option:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
+}
+
+.tag-multi-select__option--selected {
+  background-color: color-mix(in srgb, var(--color-accent) 12%, var(--color-surface));
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.tag-multi-select__option--selected:hover {
+  background-color: color-mix(in srgb, var(--color-accent) 18%, var(--color-surface));
+}
+
+.tag-multi-select__option-label {
+  min-width: 0;
+}
+
+.tag-multi-select__check-slot {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.tag-multi-select__check {
+  width: 1.125rem;
+  height: 1.125rem;
+}
+
+.tag-multi-select__chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.tag-multi-select__chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.375rem;
+  padding: 0.4375rem 0.75rem;
+  border-radius: 999px;
+  border: 1px solid color-mix(in srgb, var(--color-accent) 35%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-accent) 10%, var(--color-surface));
+  color: var(--color-text);
+  cursor: pointer;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.2;
+  transition:
+    border-color var(--duration-ui) var(--ease-smooth),
+    background-color var(--duration-ui) var(--ease-smooth);
+}
+
+.tag-multi-select__chip:hover {
+  border-color: var(--color-accent);
+  background-color: color-mix(in srgb, var(--color-accent) 16%, var(--color-surface));
+}
+
+.tag-multi-select__chip-remove {
+  flex-shrink: 0;
+  width: 0.875rem;
+  height: 0.875rem;
+  color: var(--color-muted);
+}
+
+.tag-multi-select__chip:hover .tag-multi-select__chip-remove {
+  color: var(--color-accent);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}

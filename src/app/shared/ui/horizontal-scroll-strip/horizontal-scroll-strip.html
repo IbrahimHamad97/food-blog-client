@@ -1,0 +1,42 @@
+<div class="scroll-strip">
+  @if (canScrollLeft()) {
+    <button
+      type="button"
+      class="scroll-strip__arrow scroll-strip__arrow--left"
+      aria-label="Scroll left"
+      (click)="scrollStep('left')"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m15 18-6-6 6-6" />
+      </svg>
+    </button>
+  }
+
+  <div
+    #track
+    class="scroll-strip__track"
+    [class.scroll-strip__track--dragging]="isDragging()"
+    [attr.aria-label]="ariaLabel()"
+    tabindex="0"
+    (pointerdown)="onPointerDown($event)"
+    (pointermove)="onPointerMove($event)"
+    (pointerup)="onPointerUp($event)"
+    (pointercancel)="onPointerUp($event)"
+    (click)="onTrackClick($event)"
+  >
+    <ng-content />
+  </div>
+
+  @if (canScrollRight()) {
+    <button
+      type="button"
+      class="scroll-strip__arrow scroll-strip__arrow--right"
+      aria-label="Scroll right"
+      (click)="scrollStep('right')"
+    >
+      <svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="m9 18 6-6-6-6" />
+      </svg>
+    </button>
+  }
+</div>

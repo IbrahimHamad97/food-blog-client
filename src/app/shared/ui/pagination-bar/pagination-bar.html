@@ -1,0 +1,21 @@
+@if (totalPages() > 1) {
+  <nav class="pagination-bar" aria-label="Pagination">
+    <button
+      type="button"
+      class="pagination-bar__btn"
+      [disabled]="disabled() || page() <= 1"
+      (click)="prev()"
+    >
+      Previous
+    </button>
+    <span class="pagination-bar__status">Page {{ page() }} of {{ totalPages() }}</span>
+    <button
+      type="button"
+      class="pagination-bar__btn"
+      [disabled]="disabled() || page() >= totalPages()"
+      (click)="next()"
+    >
+      Next
+    </button>
+  </nav>
+}

@@ -1,0 +1,56 @@
+<section class="home-hero">
+  <div class="home-hero__text">
+    <h1 class="home-hero__title">Real meals, real reviews</h1>
+    <p class="home-hero__subtitle">
+      Discover where people are eating — one restaurant review at a time.
+    </p>
+  </div>
+  @if (isAuthenticated()) {
+    <a routerLink="/reviews/new" class="home-hero__cta">Post a review</a>
+  }
+</section>
+
+<section class="home-section" aria-labelledby="top-meals-heading">
+  <div class="home-section__header">
+    <h2 id="top-meals-heading" class="home-section__title">Top meals</h2>
+    <p class="home-section__hint">Most liked reviews</p>
+  </div>
+  @if (popularLoading()) {
+    <p class="home-status">Loading popular reviews…</p>
+  } @else if (popularError(); as err) {
+    <p class="home-status home-status--error">{{ err }}</p>
+  } @else if (popularReviews().length === 0) {
+    <p class="home-status">No reviews yet — be the first to post one.</p>
+  } @else {
+    <app-horizontal-scroll-strip aria-label="Top meals">
+      @for (review of popularReviews(); track review.id) {
+        <app-review-card [review]="review" layout="carousel" />
+      }
+    </app-horizontal-scroll-strip>
+  }
+</section>
+
+<section class="home-section" aria-labelledby="latest-heading">
+  <div class="home-section__header">
+    <h2 id="latest-heading" class="home-section__title">Latest reviews</h2>
+  </div>
+  @if (latestLoading()) {
+    <p class="home-status">Loading latest reviews…</p>
+  } @else if (latestError(); as err) {
+    <p class="home-status home-status--error">{{ err }}</p>
+  } @else if (latestReviews().length === 0) {
+    <p class="home-status">No reviews published yet.</p>
+  } @else {
+    <div class="home-grid">
+      @for (review of latestReviews(); track review.id) {
+        <app-review-card [review]="review" layout="grid" />
+      }
+    </div>
+    <app-pagination-bar
+      [page]="latestPage()"
+      [totalPages]="latestTotalPages()"
+      [disabled]="latestLoading()"
+      (pageChange)="onLatestPageChange($event)"
+    />
+  }
+</section>

@@ -1,0 +1,59 @@
+<a
+  class="review-card"
+  [class.review-card--carousel]="layout() === 'carousel'"
+  [class.review-card--no-media]="!coverImage()"
+  [routerLink]="['/reviews', review().id]"
+>
+  @if (coverImage(); as src) {
+    <div class="review-card__media">
+      <img
+        class="review-card__image"
+        [src]="src"
+        [alt]="'Photo for ' + review().placeName"
+        loading="lazy"
+        width="400"
+        height="260"
+      />
+    </div>
+  }
+  <div class="review-card__body">
+    <div class="review-card__meta">
+      <app-rating-stars [rating]="review().rating" />
+      <time class="review-card__date" [dateTime]="review().publishedAt">
+        {{ review().publishedAt | date: 'mediumDate' }}
+      </time>
+    </div>
+    <h3 class="review-card__title">{{ review().title }}</h3>
+    <p class="review-card__place">{{ review().placeName }}</p>
+    <p class="review-card__meta-line">{{ serviceLabel() }}</p>
+    @if (shownTags().length) {
+      <div class="review-card__tags" aria-label="Tags">
+        @for (tag of shownTags(); track tag) {
+          <span class="review-card__tag">{{ tag }}</span>
+        }
+        @if (moreTagCount() > 0) {
+          <span class="review-card__tag review-card__tag--more">+{{ moreTagCount() }}</span>
+        }
+      </div>
+    }
+    <p class="review-card__excerpt">{{ review().body }}</p>
+    <div class="review-card__actions">
+      <app-review-like-button
+        [reviewId]="review().id"
+        [authorId]="review().author.id"
+        [likeCount]="review().likeCount"
+        [compact]="true"
+      />
+    </div>
+    <div class="review-card__author">
+      <img
+        class="review-card__avatar"
+        [src]="review().author.avatarUrl"
+        [alt]="''"
+        width="24"
+        height="24"
+      />
+      <span>{{ review().author.name }}</span>
+    </div>
+  </div>
+</a>

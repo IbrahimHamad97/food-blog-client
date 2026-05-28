@@ -1,3 +1,107 @@
-/* You can add global styles to this file, and also import other style files */
+/**
+ * Global theme tokens, typography, and shared motion.
+ *
+ * Components should use `var(--color-*)` — never hard-code hex in feature CSS so
+ * light/dark stay in sync. `html[data-theme]` is set by {@link ThemeService} and
+ * the inline script in `index.html` (prevents a flash of the wrong theme).
+ *
+ * Light = warm cream with coral accent. Dark = stone background with amber accent.
+ */
 
 @import 'tailwindcss';
+
+:root,
+:root[data-theme='light'] {
+  color-scheme: light;
+
+  --color-bg: #fff9f5;
+  --color-surface: #ffffff;
+  --color-surface-elevated: #ffffff;
+  --color-text: #1c1917;
+  --color-muted: #78716c;
+  --color-accent: #ea580c;
+  --color-accent-hover: #c2410c;
+  --color-accent-soft: rgba(234, 88, 12, 0.14);
+  --color-border: #e7e5e4;
+  --color-header-bg: rgba(255, 255, 255, 0.82);
+  --shadow-sm: 0 1px 2px rgba(28, 25, 23, 0.06);
+  --shadow-md: 0 8px 24px rgba(28, 25, 23, 0.08);
+}
+
+:root[data-theme='dark'] {
+  color-scheme: dark;
+
+  --color-bg: #0f0e0d;
+  --color-surface: #1a1918;
+  --color-surface-elevated: #242220;
+  --color-text: #fafaf9;
+  --color-muted: #a8a29e;
+  --color-accent: #fb923c;
+  --color-accent-hover: #fdba74;
+  --color-accent-soft: rgba(251, 146, 60, 0.18);
+  --color-border: #2e2c2a;
+  --color-header-bg: rgba(15, 14, 13, 0.88);
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.35);
+  --shadow-md: 0 12px 32px rgba(0, 0, 0, 0.45);
+}
+
+:root {
+  --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --duration-ui: 0.45s;
+  --duration-fast: 0.25s;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  line-height: 1.55;
+  -webkit-font-smoothing: antialiased;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition:
+    color var(--duration-ui) var(--ease-smooth),
+    background-color var(--duration-ui) var(--ease-smooth),
+    border-color var(--duration-ui) var(--ease-smooth),
+    opacity var(--duration-ui) var(--ease-smooth),
+    box-shadow var(--duration-ui) var(--ease-smooth),
+    transform var(--duration-fast) var(--ease-smooth);
+}
+
+button {
+  font-family: inherit;
+  transition:
+    color var(--duration-ui) var(--ease-smooth),
+    background-color var(--duration-ui) var(--ease-smooth),
+    border-color var(--duration-ui) var(--ease-smooth),
+    box-shadow var(--duration-ui) var(--ease-smooth),
+    opacity var(--duration-ui) var(--ease-smooth),
+    transform var(--duration-fast) var(--ease-smooth);
+}
+
+button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --duration-ui: 0.01ms;
+    --duration-fast: 0.01ms;
+  }
+}

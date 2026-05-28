@@ -1,0 +1,94 @@
+<!-- Desktop: brand left; nav + theme + auth grouped in .header__cluster on the right -->
+<header class="header">
+  <div class="header__inner">
+    <a routerLink="/" class="header__brand" (click)="closeMobileMenu()">
+      <span class="header__logo" aria-hidden="true">🍽</span>
+      <span class="header__site-name">{{ siteName }}</span>
+    </a>
+
+    <!-- Desktop + mobile drawer: nav and utilities grouped on the right -->
+    <div class="header__cluster" [class.header__cluster--open]="mobileMenuOpen()">
+      <nav id="primary-nav" class="header__nav" aria-label="Primary">
+        @for (link of visibleNavLinks(); track link.path) {
+          <a
+            class="header__nav-link"
+            [routerLink]="link.path"
+            routerLinkActive="header__nav-link--active"
+            [routerLinkActiveOptions]="{ exact: link.path === '/' }"
+            (click)="closeMobileMenu()"
+          >
+            {{ link.label }}
+          </a>
+        }
+      </nav>
+
+      <div class="header__utilities">
+        <button
+          type="button"
+          class="header__icon-btn"
+          (click)="toggleTheme()"
+          [attr.aria-label]="themeToggleLabel()"
+        >
+          @if (isDark()) {
+            <svg class="header__icon" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="12" cy="12" r="4" />
+              <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" />
+            </svg>
+          } @else {
+            <svg class="header__icon" viewBox="0 0 24 24" aria-hidden="true" fill="currentColor">
+              <path d="M21 14.5A7.5 7.5 0 0 1 9.5 3 6 6 0 0 0 6 16.5 6 6 0 0 0 12 22a7.5 7.5 0 0 0 9-7.5Z" />
+            </svg>
+          }
+        </button>
+
+        @if (isAuthenticated()) {
+          <div class="header__user" (focusout)="onUserFocusOut($event)">
+            <button
+              type="button"
+              class="header__user-trigger"
+              [attr.aria-expanded]="userMenuOpen()"
+              aria-haspopup="true"
+              (click)="toggleUserMenu()"
+            >
+              <img
+                class="header__avatar"
+                [src]="avatarUrl()"
+                [alt]="currentUser()!.name + ' avatar'"
+                width="32"
+                height="32"
+                (error)="onAvatarError($event)"
+              />
+              <span class="header__user-name">{{ currentUser()!.name }}</span>
+              <svg class="header__chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="m6 9 6 6 6-6" />
+              </svg>
+            </button>
+            @if (userMenuOpen()) {
+              <div class="header__user-menu" role="menu">
+                <button type="button" class="header__user-menu-item" role="menuitem" (click)="goToDashboard()">
+                  My dashboard
+                </button>
+                <button type="button" class="header__user-menu-item header__user-menu-item--danger" role="menuitem" (click)="signOut()">
+                  Sign out
+                </button>
+              </div>
+            }
+          </div>
+        } @else {
+          <a routerLink="/sign-in" class="header__sign-in" (click)="closeMobileMenu()">Sign in</a>
+        }
+      </div>
+    </div>
+
+    <button
+      type="button"
+      class="header__menu-toggle"
+      [attr.aria-expanded]="mobileMenuOpen()"
+      aria-controls="primary-nav"
+      (click)="toggleMobileMenu()"
+    >
+      <span class="sr-only">{{ mobileMenuOpen() ? 'Close menu' : 'Open menu' }}</span>
+      <span class="header__menu-icon" aria-hidden="true"></span>
+    </button>
+  </div>
+</header>

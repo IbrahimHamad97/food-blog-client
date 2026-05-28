@@ -1,0 +1,51 @@
+<div class="image-grid" role="group" aria-label="Review photos">
+  @for (url of images(); track url) {
+    <figure
+      class="image-grid__item"
+      [class.image-grid__item--uploading]="isUploading(url)"
+      [class.image-grid__item--error]="isError(url)"
+    >
+      <img [src]="url" alt="Review photo" />
+      @if (isUploading(url)) {
+        <div class="image-grid__overlay" aria-hidden="true">
+          <span class="image-grid__spinner"></span>
+        </div>
+      }
+      @if (isError(url)) {
+        <div class="image-grid__overlay image-grid__overlay--error" aria-hidden="true">
+          <span>Failed</span>
+        </div>
+      }
+      <button
+        type="button"
+        class="image-grid__remove"
+        (click)="remove($index)"
+        [attr.aria-label]="'Remove photo ' + ($index + 1)"
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" />
+        </svg>
+      </button>
+    </figure>
+  }
+
+  @if (canAdd()) {
+    <label class="image-grid__add">
+      <input
+        type="file"
+        accept="image/*"
+        multiple
+        class="image-grid__file"
+        (change)="onPick($event)"
+      />
+      <svg viewBox="0 0 24 24" aria-hidden="true">
+        <path d="M12 5v14M5 12h14" stroke="currentColor" stroke-width="2" stroke-linecap="round" />
+      </svg>
+      <span class="sr-only">Add photo</span>
+    </label>
+  }
+</div>
+
+@if (uploadError(); as err) {
+  <p class="image-grid__error" role="alert">{{ err }}</p>
+}

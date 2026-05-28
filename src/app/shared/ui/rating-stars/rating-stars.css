@@ -1,0 +1,18 @@
+.stars {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.125rem;
+}
+
+.stars__icon {
+  width: 0.875rem;
+  height: 0.875rem;
+}
+
+.stars__icon--filled {
+  fill: var(--color-accent);
+}
+
+.stars__icon--empty {
+  fill: var(--color-border);
+}
