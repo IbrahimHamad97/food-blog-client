@@ -5,6 +5,6 @@
  */
 export const environment = {
   production: true,
-  apiBaseUrl: 'https://food-blog-server-production.up.railway.app',
+  apiBaseUrl: 'https://food-blog-server-production.up.railway.app/api',
   googleClientId: '603404766692-q5oe06jbcvspsbo810po66dm2u9jla38.apps.googleusercontent.com',
 };

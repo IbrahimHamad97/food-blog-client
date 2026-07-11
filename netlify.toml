@@ -5,7 +5,9 @@
 [build.environment]
   NODE_VERSION = "24"
 
-# Client-side routing for the Angular SPA
+[[plugins]]
+  package = "@netlify/angular-runtime"
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
