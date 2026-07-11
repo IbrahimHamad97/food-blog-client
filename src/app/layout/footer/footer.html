@@ -1,10 +1,5 @@
 <footer class="footer">
   <div class="footer__inner">
-    <nav class="footer__nav" aria-label="Footer">
-      @for (link of footerLinks; track link.path) {
-        <a class="footer__link" [routerLink]="link.path">{{ link.label }}</a>
-      }
-    </nav>
-    <p class="footer__copy">&copy; {{ year }} Brho's Food Blog. All rights reserved.</p>
+    <p class="footer__copy">&copy; {{ year }} Brho's Food Blog.</p>
   </div>
 </footer>
