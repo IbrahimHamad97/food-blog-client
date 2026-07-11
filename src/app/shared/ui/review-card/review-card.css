@@ -42,15 +42,23 @@
   min-height: 31rem;
 }
 
-.review-card--no-media .review-card__body {
-  padding-top: 1.125rem;
-}
-
 .review-card__media {
   position: relative;
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background-color: var(--color-border);
+}
+
+.review-card__media--placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background:
+    radial-gradient(
+      circle at 50% 40%,
+      color-mix(in srgb, var(--color-accent) 18%, var(--color-surface)),
+      var(--color-surface)
+    );
 }
 
 .review-card__bookmark {
@@ -67,7 +75,16 @@
   transition: transform var(--duration-ui) var(--ease-smooth);
 }
 
-.review-card:hover .review-card__image {
+.review-card__image--placeholder {
+  width: auto;
+  height: auto;
+  max-width: 55%;
+  max-height: 70%;
+  object-fit: contain;
+  image-rendering: pixelated;
+}
+
+.review-card:hover .review-card__image:not(.review-card__image--placeholder) {
   transform: scale(1.04);
 }
 

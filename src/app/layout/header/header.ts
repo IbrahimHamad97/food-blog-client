@@ -44,6 +44,7 @@ export class Header {
   }
 
   protected toggleMobileMenu(): void {
+    this.userMenuOpen.set(false);
     this.mobileMenuOpen.update((open) => !open);
   }
 
@@ -87,6 +88,7 @@ export class Header {
   }
 
   protected toggleUserMenu(): void {
+    this.mobileMenuOpen.set(false);
     this.userMenuOpen.update((open) => !open);
   }
 

@@ -12,10 +12,15 @@ import { MeDashboardPage } from './features/me/me-dashboard-page';
 
 /** Route definitions consumed by `provideRouter` in {@link app.config}. */
 export const routes: Routes = [
-  { path: '', component: HomePage, title: 'Food Blog' },
+  { path: '', component: HomePage, title: "Brho's Food Blog" },
   { path: 'sign-in', component: SignInPage, title: 'Sign in', canActivate: [guestGuard] },
   { path: 'me', component: MeDashboardPage, title: 'My dashboard', canActivate: [authGuard] },
-  { path: 'reviews/new', component: ReviewFormPage, title: 'Post a review', canActivate: [authGuard] },
+  {
+    path: 'reviews/new',
+    component: ReviewFormPage,
+    title: 'Post a review',
+    canActivate: [authGuard],
+  },
   {
     path: 'reviews/:id/edit',
     component: ReviewFormPage,

@@ -1,7 +1,7 @@
 <a
   class="review-card"
   [class.review-card--carousel]="layout() === 'carousel'"
-  [class.review-card--no-media]="!coverImage()"
+  [class.review-card--placeholder]="usingPlaceholder()"
   [routerLink]="['/reviews', review().id]"
 >
   <app-review-bookmark-button
@@ -11,18 +11,24 @@
     [bookmarkedByMe]="review().bookmarkedByMe ?? false"
     [compact]="true"
   />
-  @if (coverImage(); as src) {
-    <div class="review-card__media">
-      <img
-        class="review-card__image"
-        [src]="src"
-        [alt]="'Photo for ' + review().placeName"
-        loading="lazy"
-        width="400"
-        height="260"
-      />
-    </div>
-  }
+  <div
+    class="review-card__media"
+    [class.review-card__media--placeholder]="usingPlaceholder()"
+  >
+    <img
+      class="review-card__image"
+      [class.review-card__image--placeholder]="usingPlaceholder()"
+      [src]="coverImage()"
+      [alt]="
+        usingPlaceholder()
+          ? 'No photo for this review'
+          : 'Photo for ' + review().placeName
+      "
+      loading="lazy"
+      width="400"
+      height="260"
+    />
+  </div>
   <div class="review-card__body">
     <div class="review-card__meta">
       <app-rating-stars [rating]="review().rating" />

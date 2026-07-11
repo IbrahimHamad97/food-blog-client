@@ -11,6 +11,9 @@ import { ReviewLikeButton } from '../review-like-button/review-like-button';
 import { ReviewBookmarkButton } from '../review-bookmark-button/review-bookmark-button';
 import { UserAvatar } from '../user-avatar/user-avatar';
 
+/** Shown on cards when a review has no uploaded photos. */
+const PLACEHOLDER_IMAGE = '/Temmie.png';
+
 @Component({
   selector: 'app-review-card',
   imports: [RouterLink, RatingStars, DatePipe, ReviewLikeButton, ReviewBookmarkButton, UserAvatar],
@@ -30,8 +33,13 @@ export class ReviewCard {
    */
   readonly layout = input<'grid' | 'carousel'>('grid');
 
-  /** First uploaded photo for the card cover, if any. */
-  protected readonly coverImage = computed(() => this.review().imageUrls[0] ?? null);
+  /** True when the card shows the Temmie placeholder instead of a real photo. */
+  protected readonly usingPlaceholder = computed(() => this.review().imageUrls.length === 0);
+
+  /** Cover URL — first review photo, or Temmie when none were uploaded. */
+  protected readonly coverImage = computed(
+    () => this.review().imageUrls[0] ?? PLACEHOLDER_IMAGE,
+  );
 
   protected serviceLabel(): string {
     return serviceTypeLabel(this.review().serviceType);

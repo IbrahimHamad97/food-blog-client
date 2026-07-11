@@ -35,6 +35,17 @@
     >
       @if (r.imageUrls.length) {
         <app-review-photo-gallery [imageUrls]="r.imageUrls" [altPrefix]="r.placeName" />
+      } @else {
+        <div class="review-detail__placeholder" aria-hidden="true">
+          <img
+            class="review-detail__placeholder-img"
+            src="/Temmie.png"
+            alt=""
+            width="160"
+            height="160"
+          />
+          <p class="review-detail__placeholder-caption">No photos for this visit</p>
+        </div>
       }
 
       <header class="review-detail__header">

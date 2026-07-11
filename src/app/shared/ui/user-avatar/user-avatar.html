@@ -6,6 +6,7 @@
     [class.user-avatar--lg]="size() === 'lg'"
     [src]="avatarUrl()!"
     [alt]="name() + ' avatar'"
+    referrerpolicy="no-referrer"
     (error)="onImageError()"
   />
 } @else {

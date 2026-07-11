@@ -203,19 +203,16 @@ export class ReviewFormPage {
     this.imagesError.set(null);
     this.form.markAllAsTouched();
 
-    if (this.imageUrls().length === 0) {
-      this.imagesError.set('Add at least one photo before publishing.');
-      return;
-    }
+    if (this.imageUrls().length > 0) {
+      if (this.imageUrls().some((url) => url.startsWith('blob:') || url.startsWith('data:'))) {
+        this.imagesError.set('Wait for photos to finish uploading, or remove failed ones.');
+        return;
+      }
 
-    if (this.imageUrls().some((url) => url.startsWith('blob:') || url.startsWith('data:'))) {
-      this.imagesError.set('Wait for photos to finish uploading, or remove failed ones.');
-      return;
-    }
-
-    if (this.imageUrls().some((url) => !url.startsWith('https://'))) {
-      this.imagesError.set('All photos must finish uploading before you publish.');
-      return;
+      if (this.imageUrls().some((url) => !url.startsWith('https://'))) {
+        this.imagesError.set('All photos must finish uploading before you publish.');
+        return;
+      }
     }
 
     if (this.form.invalid) {

@@ -161,7 +161,7 @@
       </label>
 
       <div class="review-form__field">
-        <span>Photos <em class="review-form__required-hint">(required, up to 5)</em></span>
+        <span>Photos <em class="review-form__optional">(optional, up to 5)</em></span>
         <app-image-upload-grid #uploadGrid [(images)]="imageUrls" />
         @if (imagesError(); as imgErr) {
           <span class="review-form__error">{{ imgErr }}</span>

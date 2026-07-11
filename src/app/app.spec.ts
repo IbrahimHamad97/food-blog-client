@@ -21,6 +21,6 @@ describe('App', () => {
     const fixture = TestBed.createComponent(App);
     await fixture.whenStable();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.header__site-name')?.textContent).toContain('Food Blog');
+    expect(compiled.querySelector('.header__site-name')?.textContent).toContain("Brho's Food Blog");
   });
 });
