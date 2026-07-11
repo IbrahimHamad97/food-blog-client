@@ -66,8 +66,9 @@
   right: 0;
   padding: 1rem 1.25rem 1.25rem;
   border-bottom: 1px solid var(--color-border);
-  background-color: var(--color-header-bg);
-  backdrop-filter: blur(12px);
+  background-color: var(--color-surface);
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   box-shadow: var(--shadow-md);
 }
 
