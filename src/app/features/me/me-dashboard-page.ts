@@ -10,11 +10,17 @@ import { apiErrorMessage, ReviewsApiService } from '../../core/data/reviews-api.
 import { ReviewBookmarksService } from '../../core/engagement/review-bookmarks.service';
 import { ReviewLikesService } from '../../core/engagement/review-likes.service';
 import { Review } from '../../core/models/review.model';
+import {
+  BLOCKED_LANGUAGE_MESSAGE,
+  containsBlockedLanguage,
+} from '../../core/utils/content-filter';
 import { PaginationBar } from '../../shared/ui/pagination-bar/pagination-bar';
 import { ReviewCard } from '../../shared/ui/review-card/review-card';
 import { UserAvatar } from '../../shared/ui/user-avatar/user-avatar';
 
 const PAGE_SIZE = 12;
+const NAME_MIN = 2;
+const NAME_MAX = 40;
 
 @Component({
   selector: 'app-me-dashboard-page',
@@ -57,6 +63,12 @@ export class MeDashboardPage implements OnInit {
   protected readonly reviewsLiked = signal(0);
   protected readonly reviewsBookmarked = signal(0);
   protected readonly statsError = signal<string | null>(null);
+
+  protected readonly editingName = signal(false);
+  protected readonly nameDraft = signal('');
+  protected readonly nameSaving = signal(false);
+  protected readonly nameError = signal<string | null>(null);
+  protected readonly nameSaved = signal(false);
 
   /** Liked list with session overrides applied — drops unliked items immediately. */
   protected readonly displayedLikedReviews = computed(() => {
@@ -112,6 +124,53 @@ export class MeDashboardPage implements OnInit {
   protected onBookmarkedReviewsPageChange(page: number): void {
     void this.loadBookmarkedReviews(page);
     this.scrollTo('me-bookmarks');
+  }
+
+  protected startEditName(): void {
+    const user = this.user();
+    if (!user) {
+      return;
+    }
+    this.nameDraft.set(user.name);
+    this.nameError.set(null);
+    this.nameSaved.set(false);
+    this.editingName.set(true);
+  }
+
+  protected cancelEditName(): void {
+    this.editingName.set(false);
+    this.nameError.set(null);
+    this.nameSaving.set(false);
+  }
+
+  protected onNameDraftInput(event: Event): void {
+    const value = (event.target as HTMLInputElement).value;
+    this.nameDraft.set(value);
+    this.nameSaved.set(false);
+  }
+
+  protected async saveDisplayName(): Promise<void> {
+    const next = this.nameDraft().trim();
+    if (next.length < NAME_MIN || next.length > NAME_MAX) {
+      this.nameError.set(`Display name must be ${NAME_MIN}–${NAME_MAX} characters.`);
+      return;
+    }
+    if (containsBlockedLanguage(next)) {
+      this.nameError.set(BLOCKED_LANGUAGE_MESSAGE);
+      return;
+    }
+
+    this.nameSaving.set(true);
+    this.nameError.set(null);
+    try {
+      await this.auth.updateDisplayName(next);
+      this.editingName.set(false);
+      this.nameSaved.set(true);
+    } catch (err) {
+      this.nameError.set(apiErrorMessage(err, 'Could not update your display name.'));
+    } finally {
+      this.nameSaving.set(false);
+    }
   }
 
   private scrollTo(id: string): void {

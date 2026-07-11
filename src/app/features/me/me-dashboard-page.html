@@ -6,7 +6,55 @@
       </div>
       <div class="me-dash__profile-text">
         <h1 class="me-dash__title">My dashboard</h1>
-        <p class="me-dash__name">{{ u.name }}</p>
+
+        @if (editingName()) {
+          <div class="me-dash__name-edit">
+            <label class="me-dash__name-label" for="display-name">Display name</label>
+            <div class="me-dash__name-row">
+              <input
+                id="display-name"
+                class="me-dash__name-input"
+                type="text"
+                [value]="nameDraft()"
+                maxlength="40"
+                autocomplete="nickname"
+                [disabled]="nameSaving()"
+                (input)="onNameDraftInput($event)"
+              />
+              <button
+                type="button"
+                class="me-dash__name-btn me-dash__name-btn--save"
+                [disabled]="nameSaving()"
+                (click)="saveDisplayName()"
+              >
+                {{ nameSaving() ? 'Saving…' : 'Save' }}
+              </button>
+              <button
+                type="button"
+                class="me-dash__name-btn me-dash__name-btn--cancel"
+                [disabled]="nameSaving()"
+                (click)="cancelEditName()"
+              >
+                Cancel
+              </button>
+            </div>
+            <p class="me-dash__name-hint">Shown on your reviews instead of your Google name.</p>
+            @if (nameError(); as err) {
+              <p class="me-dash__status me-dash__status--error">{{ err }}</p>
+            }
+          </div>
+        } @else {
+          <div class="me-dash__name-line">
+            <p class="me-dash__name">{{ u.name }}</p>
+            <button type="button" class="me-dash__edit-name" (click)="startEditName()">
+              Edit name
+            </button>
+          </div>
+          @if (nameSaved()) {
+            <p class="me-dash__name-saved">Display name updated.</p>
+          }
+        }
+
         <p class="me-dash__email">{{ u.email }}</p>
       </div>
       <a routerLink="/reviews/new" class="me-dash__primary-cta">Post a review</a>

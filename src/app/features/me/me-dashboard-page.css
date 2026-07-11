@@ -34,6 +34,106 @@
   font-weight: 700;
 }
 
+.me-dash__name-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem 0.75rem;
+}
+
+.me-dash__edit-name {
+  padding: 0.25rem 0.625rem;
+  border: 1px solid var(--color-border);
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+  background-color: var(--color-surface);
+  cursor: pointer;
+}
+
+.me-dash__edit-name:hover {
+  color: var(--color-accent);
+  border-color: color-mix(in srgb, var(--color-accent) 40%, var(--color-border));
+  background-color: var(--color-accent-soft);
+}
+
+.me-dash__name-edit {
+  display: flex;
+  flex-direction: column;
+  gap: 0.375rem;
+  margin-top: 0.125rem;
+}
+
+.me-dash__name-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-muted);
+}
+
+.me-dash__name-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.me-dash__name-input {
+  flex: 1 1 10rem;
+  min-width: 0;
+  padding: 0.5rem 0.75rem;
+  border: 1px solid var(--color-border);
+  border-radius: 0.625rem;
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--color-text);
+  background-color: var(--color-surface);
+}
+
+.me-dash__name-input:focus {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 1px;
+}
+
+.me-dash__name-btn {
+  padding: 0.5rem 0.875rem;
+  border-radius: 0.625rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.me-dash__name-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.me-dash__name-btn--save {
+  border: none;
+  color: #fff;
+  background: linear-gradient(135deg, var(--color-accent), var(--color-accent-hover));
+}
+
+.me-dash__name-btn--cancel {
+  border: 1px solid var(--color-border);
+  color: var(--color-muted);
+  background-color: var(--color-surface);
+}
+
+.me-dash__name-hint {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--color-muted);
+}
+
+.me-dash__name-saved {
+  margin: 0.25rem 0 0;
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
 .me-dash__email {
   margin: 0.2rem 0 0;
   font-size: 0.875rem;

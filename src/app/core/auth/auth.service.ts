@@ -57,6 +57,15 @@ export class AuthService {
     this.userSignal.set(user);
   }
 
+  /** Updates the public display name and refreshes local session user. */
+  async updateDisplayName(name: string): Promise<AuthUser> {
+    const { user } = await firstValueFrom(
+      this.http.patch<MeResponse>(`${environment.apiBaseUrl}/auth/me`, { name }),
+    );
+    this.userSignal.set(user);
+    return user;
+  }
+
   /** Clears local session and notifies API (best-effort). */
   async signOut(): Promise<void> {
     const token = this.getToken();
