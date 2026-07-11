@@ -19,6 +19,10 @@ import { MealItem, PriceCurrency, ServiceType } from '../../core/models/meal.mod
 import { Review } from '../../core/models/review.model';
 import { NUTRITION_FIELD_DEFS } from '../../core/models/nutrition.model';
 import { nutritionFromFormValue } from '../../core/utils/nutrition.utils';
+import {
+  BLOCKED_LANGUAGE_MESSAGE,
+  containsBlockedLanguage,
+} from '../../core/utils/content-filter';
 import { computeTotalAmount, formatMoney } from '../../core/utils/review.utils';
 import { CUISINE_TAGS_SEED, FOOD_TYPE_TAGS_SEED } from '../../core/seeds/review-tags.seeds';
 import { RatingInput } from '../../shared/ui/rating-input/rating-input';
@@ -246,6 +250,23 @@ export class ReviewFormPage {
       foodTypeTags: raw.foodTypeTags ?? [],
       imageUrls: this.imageUrls(),
     };
+
+    const nutrition = payload.nutrition;
+    if (
+      containsBlockedLanguage(
+        payload.title,
+        payload.body,
+        payload.placeName,
+        ...payload.cuisineTags,
+        ...payload.foodTypeTags,
+        ...payload.meals.flatMap((m) => [m.name, m.notes]),
+        nutrition?.allergens,
+        nutrition?.notes,
+      )
+    ) {
+      this.submitError.set(BLOCKED_LANGUAGE_MESSAGE);
+      return;
+    }
 
     this.submitting.set(true);
     try {
