@@ -1,0 +1,22 @@
+@if (showPhoto()) {
+  <img
+    class="user-avatar user-avatar--photo"
+    [class.user-avatar--xs]="size() === 'xs'"
+    [class.user-avatar--sm]="size() === 'sm'"
+    [class.user-avatar--lg]="size() === 'lg'"
+    [src]="avatarUrl()!"
+    [alt]="name() + ' avatar'"
+    (error)="onImageError()"
+  />
+} @else {
+  <span
+    class="user-avatar user-avatar--initials"
+    [class.user-avatar--xs]="size() === 'xs'"
+    [class.user-avatar--sm]="size() === 'sm'"
+    [class.user-avatar--lg]="size() === 'lg'"
+    role="img"
+    [attr.aria-label]="name()"
+  >
+    {{ initials() }}
+  </span>
+}

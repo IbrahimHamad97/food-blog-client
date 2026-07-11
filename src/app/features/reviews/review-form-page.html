@@ -14,10 +14,14 @@
   } @else if (loadError(); as err) {
     <p class="review-form__submit-error" role="alert">{{ err }}</p>
   } @else {
-  <div class="review-form__dev-fill">
-    <button type="button" class="review-form__dev-btn" (click)="fillDevFull()">Fill sample (full)</button>
-    <button type="button" class="review-form__dev-btn" (click)="fillDevMinimal()">Fill sample (min)</button>
-  </div>
+  <!-- Dev sample-fill — uncomment block below + set showDevFill in review-form-page.ts for local testing.
+  @if (showDevFill) {
+    <div class="review-form__dev-fill">
+      <button type="button" class="review-form__dev-btn" (click)="fillDevFull()">Fill sample (full)</button>
+      <button type="button" class="review-form__dev-btn" (click)="fillDevMinimal()">Fill sample (min)</button>
+    </div>
+  }
+  -->
 
   <form class="review-form__body" [formGroup]="form" (ngSubmit)="onSubmit()">
     <fieldset class="review-form__section">

@@ -29,6 +29,10 @@ export interface Review {
   imageUrls: string[];
   /** Total likes from all users (display + popular sort). */
   likeCount: number;
+  /** Whether the signed-in viewer has liked this review (false/absent when anonymous). */
+  likedByMe?: boolean;
+  /** Whether the signed-in viewer has bookmarked this review (false/absent when anonymous). */
+  bookmarkedByMe?: boolean;
   author: UserSummary;
   publishedAt: string;
 }

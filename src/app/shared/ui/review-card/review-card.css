@@ -1,6 +1,13 @@
 :host {
   display: block;
   height: 100%;
+  animation: fade-in-up var(--duration-ui) var(--ease-out) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :host {
+    animation: none;
+  }
 }
 
 :host(.review-card-host--carousel) {
@@ -11,6 +18,7 @@
 }
 
 .review-card {
+  position: relative;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -43,6 +51,13 @@
   aspect-ratio: 4 / 3;
   overflow: hidden;
   background-color: var(--color-border);
+}
+
+.review-card__bookmark {
+  position: absolute;
+  top: 0.625rem;
+  right: 0.625rem;
+  z-index: 2;
 }
 
 .review-card__image {
@@ -147,6 +162,11 @@
   margin-top: 0.5rem;
 }
 
+.review-card__actions:not(:has(.like-btn)) {
+  display: none;
+  margin: 0;
+}
+
 .review-card__author {
   display: flex;
   align-items: center;
@@ -156,12 +176,4 @@
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--color-text);
-}
-
-.review-card__avatar {
-  width: 1.5rem;
-  height: 1.5rem;
-  border-radius: 50%;
-  object-fit: cover;
-  background-color: var(--color-border);
 }

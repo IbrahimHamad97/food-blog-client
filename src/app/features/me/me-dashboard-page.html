@@ -1,14 +1,9 @@
 @if (user(); as u) {
-  <div class="me-dash">
-    <header class="me-dash__profile">
-      <img
-        class="me-dash__avatar"
-        [src]="avatarUrl()"
-        [alt]="u.name + ' avatar'"
-        width="80"
-        height="80"
-        (error)="onAvatarError($event)"
-      />
+  <div class="me-dash u-fade-in">
+    <header class="me-dash__profile u-fade-in-up">
+      <div class="me-dash__avatar-wrap">
+        <app-user-avatar [name]="u.name" [avatarUrl]="u.avatarUrl" size="lg" />
+      </div>
       <div class="me-dash__profile-text">
         <h1 class="me-dash__title">My dashboard</h1>
         <p class="me-dash__name">{{ u.name }}</p>
@@ -17,22 +12,30 @@
       <a routerLink="/reviews/new" class="me-dash__primary-cta">Post a review</a>
     </header>
 
-    <ul class="me-dash__stats" aria-label="Your activity">
+    @if (statsError(); as err) {
+      <p class="me-dash__status me-dash__status--error">{{ err }}</p>
+    }
+
+    <ul class="me-dash__stats u-fade-in-up u-fade-in-up--delay-1" aria-label="Your activity">
       <li class="me-dash__stat">
         <span class="me-dash__stat-value">{{ myReviewsTotal() }}</span>
         <span class="me-dash__stat-label">Reviews</span>
       </li>
       <li class="me-dash__stat">
-        <span class="me-dash__stat-value">0</span>
-        <span class="me-dash__stat-label">Likes</span>
+        <span class="me-dash__stat-value">{{ likesReceived() }}</span>
+        <span class="me-dash__stat-label">Likes received</span>
       </li>
       <li class="me-dash__stat">
-        <span class="me-dash__stat-value">0</span>
-        <span class="me-dash__stat-label">Collections</span>
+        <span class="me-dash__stat-value">{{ effectiveReviewsLiked() }}</span>
+        <span class="me-dash__stat-label">Liked</span>
+      </li>
+      <li class="me-dash__stat">
+        <span class="me-dash__stat-value">{{ effectiveReviewsBookmarked() }}</span>
+        <span class="me-dash__stat-label">Bookmarked</span>
       </li>
     </ul>
 
-    <section class="me-dash__section" aria-labelledby="me-reviews">
+    <section class="me-dash__section u-fade-in-up u-fade-in-up--delay-1" aria-labelledby="me-reviews">
       <div class="me-dash__section-head">
         <h2 id="me-reviews" class="me-dash__section-title">My reviews</h2>
         <p class="me-dash__section-desc">Restaurant visits you have published.</p>
@@ -66,31 +69,72 @@
       }
     </section>
 
-    @for (section of sections; track section.id) {
-      <section class="me-dash__section" [attr.aria-labelledby]="'me-' + section.id">
-        <div class="me-dash__section-head">
-          <h2 [id]="'me-' + section.id" class="me-dash__section-title">{{ section.title }}</h2>
-          <p class="me-dash__section-desc">{{ section.description }}</p>
-        </div>
+    <section class="me-dash__section u-fade-in-up u-fade-in-up--delay-2" aria-labelledby="me-likes">
+      <div class="me-dash__section-head">
+        <h2 id="me-likes" class="me-dash__section-title">Liked reviews</h2>
+        <p class="me-dash__section-desc">Reviews you have liked from other people.</p>
+      </div>
 
+      @if (likedReviewsLoading()) {
+        <p class="me-dash__status">Loading liked reviews…</p>
+      } @else if (likedReviewsError(); as err) {
+        <p class="me-dash__status me-dash__status--error">{{ err }}</p>
+      } @else if (displayedLikedReviews().length === 0) {
         <div class="me-dash__empty">
           <span class="me-dash__empty-icon" aria-hidden="true">
-            @switch (section.id) {
-              @case ('likes') {
-                <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" fill="none" stroke="currentColor" stroke-width="1.75" /></svg>
-              }
-              @default {
-                <svg viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" /></svg>
-              }
-            }
+            <svg viewBox="0 0 24 24"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" fill="none" stroke="currentColor" stroke-width="1.75" /></svg>
           </span>
-          <p class="me-dash__empty-title">{{ section.emptyTitle }}</p>
-          <p class="me-dash__empty-hint">{{ section.emptyHint }}</p>
-          @if (section.ctaLabel && section.ctaLink) {
-            <a [routerLink]="section.ctaLink" class="me-dash__empty-cta">{{ section.ctaLabel }}</a>
+          <p class="me-dash__empty-title">No likes yet</p>
+          <p class="me-dash__empty-hint">Browse the home feed and tap the heart on reviews you enjoy.</p>
+          <a routerLink="/" class="me-dash__empty-cta">Explore reviews</a>
+        </div>
+      } @else {
+        <div class="me-dash__review-grid">
+          @for (review of displayedLikedReviews(); track review.id) {
+            <app-review-card [review]="review" layout="grid" />
           }
         </div>
-      </section>
-    }
+        <app-pagination-bar
+          [page]="likedReviewsPage()"
+          [totalPages]="likedReviewsTotalPages()"
+          [disabled]="likedReviewsLoading()"
+          (pageChange)="onLikedReviewsPageChange($event)"
+        />
+      }
+    </section>
+
+    <section class="me-dash__section u-fade-in-up u-fade-in-up--delay-2" aria-labelledby="me-bookmarks">
+      <div class="me-dash__section-head">
+        <h2 id="me-bookmarks" class="me-dash__section-title">Bookmarked reviews</h2>
+        <p class="me-dash__section-desc">Reviews you saved with the bookmark icon.</p>
+      </div>
+
+      @if (bookmarkedReviewsLoading()) {
+        <p class="me-dash__status">Loading bookmarked reviews…</p>
+      } @else if (bookmarkedReviewsError(); as err) {
+        <p class="me-dash__status me-dash__status--error">{{ err }}</p>
+      } @else if (displayedBookmarkedReviews().length === 0) {
+        <div class="me-dash__empty">
+          <span class="me-dash__empty-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24"><path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linejoin="round" /></svg>
+          </span>
+          <p class="me-dash__empty-title">No bookmarks yet</p>
+          <p class="me-dash__empty-hint">Tap the bookmark icon on any review to save it here.</p>
+          <a routerLink="/" class="me-dash__empty-cta">Explore reviews</a>
+        </div>
+      } @else {
+        <div class="me-dash__review-grid">
+          @for (review of displayedBookmarkedReviews(); track review.id) {
+            <app-review-card [review]="review" layout="grid" />
+          }
+        </div>
+        <app-pagination-bar
+          [page]="bookmarkedReviewsPage()"
+          [totalPages]="bookmarkedReviewsTotalPages()"
+          [disabled]="bookmarkedReviewsLoading()"
+          (pageChange)="onBookmarkedReviewsPageChange($event)"
+        />
+      }
+    </section>
   </div>
 }

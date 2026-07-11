@@ -43,6 +43,9 @@ const DEV_FILL_IMAGES = [
   styleUrl: './review-form-page.css',
 })
 export class ReviewFormPage {
+  /** Dev sample-fill — set to `!environment.production` when re-enabling fill buttons. */
+  // protected readonly showDevFill = !environment.production;
+
   private readonly fb = inject(FormBuilder);
   private readonly route = inject(ActivatedRoute);
   private readonly reviewsApi = inject(ReviewsApiService);

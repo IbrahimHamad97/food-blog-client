@@ -1,0 +1,26 @@
+@if (isAuthenticated() && !isOwnReview()) {
+  <button
+    type="button"
+    class="bookmark-btn"
+    [class.bookmark-btn--compact]="compact()"
+    [class.bookmark-btn--saved]="bookmarked()"
+    [attr.aria-pressed]="bookmarked()"
+    [attr.aria-label]="bookmarked() ? 'Remove bookmark' : 'Bookmark review'"
+    [disabled]="busy()"
+    (click)="onClick($event)"
+  >
+    <svg class="bookmark-btn__icon" viewBox="0 0 24 24" aria-hidden="true">
+      @if (bookmarked()) {
+        <path d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z" fill="currentColor" />
+      } @else {
+        <path
+          d="M6 2h12a1 1 0 0 1 1 1v19l-7-4-7 4V3a1 1 0 0 1 1-1z"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.75"
+          stroke-linejoin="round"
+        />
+      }
+    </svg>
+  </button>
+}

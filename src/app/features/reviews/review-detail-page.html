@@ -4,8 +4,16 @@
   <article class="review-detail">
     <div class="review-detail__top-bar">
       <a routerLink="/" class="review-detail__back">&larr; Back to home</a>
-      @if (isOwner()) {
-        <div class="review-detail__owner-actions">
+      <div class="review-detail__top-actions">
+        @if (!isOwner() && isAuthenticated()) {
+          <app-review-bookmark-button
+            [reviewId]="r.id"
+            [authorId]="r.author.id"
+            [bookmarkedByMe]="r.bookmarkedByMe ?? false"
+          />
+        }
+        @if (isOwner()) {
+          <div class="review-detail__owner-actions">
           <a [routerLink]="['/reviews', r.id, 'edit']" class="review-detail__action review-detail__action--edit">
             Edit review
           </a>
@@ -17,7 +25,8 @@
             Delete
           </button>
         </div>
-      }
+        }
+      </div>
     </div>
 
     <div
@@ -46,13 +55,16 @@
             }
           </ul>
         }
+        @if (isAuthenticated()) {
         <div class="review-detail__likes">
           <app-review-like-button
             [reviewId]="r.id"
             [authorId]="r.author.id"
             [likeCount]="r.likeCount"
+            [likedByMe]="r.likedByMe ?? false"
           />
         </div>
+        }
       </header>
     </div>
 
@@ -271,9 +283,7 @@
       <p class="review-detail__body">{{ r.body }}</p>
       <footer class="review-detail__byline">
         <span class="review-detail__byline-label">Written by</span>
-        <a class="review-detail__author" [routerLink]="['/users', r.author.id]">{{
-          r.author.name
-        }}</a>
+        <span class="review-detail__author">{{ r.author.name }}</span>
       </footer>
     </section>
 
@@ -306,6 +316,12 @@
       </form>
     </dialog>
   </article>
+} @else if (loadError(); as err) {
+  <div class="review-detail__missing">
+    <h1>Something went wrong</h1>
+    <p>{{ err }}</p>
+    <a routerLink="/">Return home</a>
+  </div>
 } @else {
   <div class="review-detail__missing">
     <h1>Review not found</h1>

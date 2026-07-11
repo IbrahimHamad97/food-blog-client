@@ -5,7 +5,6 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/auth/auth.guard';
 import { guestGuard } from './core/auth/guest.guard';
 import { SignInPage } from './features/auth/sign-in-page';
-import { CollectionsBrowsePage } from './features/collections/collections-browse-page';
 import { HomePage } from './features/home/home-page';
 import { ReviewDetailPage } from './features/reviews/review-detail-page';
 import { ReviewFormPage } from './features/reviews/review-form-page';
@@ -16,7 +15,6 @@ export const routes: Routes = [
   { path: '', component: HomePage, title: 'Food Blog' },
   { path: 'sign-in', component: SignInPage, title: 'Sign in', canActivate: [guestGuard] },
   { path: 'me', component: MeDashboardPage, title: 'My dashboard', canActivate: [authGuard] },
-  { path: 'collections', component: CollectionsBrowsePage, title: 'Collections' },
   { path: 'reviews/new', component: ReviewFormPage, title: 'Post a review', canActivate: [authGuard] },
   {
     path: 'reviews/:id/edit',

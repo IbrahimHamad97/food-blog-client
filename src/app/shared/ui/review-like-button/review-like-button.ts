@@ -18,17 +18,25 @@ export class ReviewLikeButton {
   /** Review author — when omitted, own-review detection is skipped until bound. */
   readonly authorId = input<string>();
   readonly likeCount = input.required<number>();
+  /** Server-provided liked state for the current viewer. */
+  readonly likedByMe = input(false);
   /** Smaller padding and icon on feed cards. */
   readonly compact = input(false);
 
   protected readonly busy = signal(false);
 
-  protected readonly liked = computed(() => {
-    this.likes.likedIds();
-    return this.likes.isLiked(this.reviewId());
+  /** Live like count — session override wins over the server-provided input. */
+  protected readonly count = computed(() => {
+    this.likes.overridesMap();
+    return this.likes.getState(this.reviewId(), this.likedByMe(), this.likeCount()).likeCount;
   });
 
-  protected readonly canLike = this.likes.isAuthenticated;
+  protected readonly liked = computed(() => {
+    this.likes.overridesMap();
+    return this.likes.getState(this.reviewId(), this.likedByMe(), this.likeCount()).liked;
+  });
+
+  protected readonly isAuthenticated = this.auth.isAuthenticated;
 
   protected readonly isOwnReview = computed(() => {
     const authorId = this.authorId();
@@ -49,7 +57,9 @@ export class ReviewLikeButton {
 
     this.busy.set(true);
     try {
-      await this.likes.toggleLike(this.reviewId(), this.authorId());
+      await this.likes.toggle(this.reviewId(), this.liked(), this.count(), this.authorId());
+    } catch {
+      // State is reverted inside the service; nothing else to do here.
     } finally {
       this.busy.set(false);
     }

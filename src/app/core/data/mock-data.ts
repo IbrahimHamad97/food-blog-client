@@ -6,21 +6,9 @@ import { Collection, ReviewSeed } from '../models/review.model';
 import { UserSummary } from '../models/user.model';
 
 export const MOCK_USERS: UserSummary[] = [
-  {
-    id: 'user-1',
-    name: 'Alex Rivera',
-    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Alex',
-  },
-  {
-    id: 'user-2',
-    name: 'Jordan Lee',
-    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Jordan',
-  },
-  {
-    id: 'user-3',
-    name: 'Sam Okonkwo',
-    avatarUrl: 'https://api.dicebear.com/7.x/avataaars/svg?seed=Sam',
-  },
+  { id: 'user-1', name: 'Alex Rivera', avatarUrl: null },
+  { id: 'user-2', name: 'Jordan Lee', avatarUrl: null },
+  { id: 'user-3', name: 'Sam Okonkwo', avatarUrl: null },
 ];
 
 /** Reviews sorted newest-first when consumed via {@link MockDataService}. */

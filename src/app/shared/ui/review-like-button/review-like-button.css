@@ -33,10 +33,6 @@
   background-color: var(--color-accent-soft);
 }
 
-.like-btn--guest {
-  cursor: pointer;
-}
-
 .like-btn:disabled {
   opacity: 0.65;
   cursor: wait;
@@ -44,13 +40,20 @@
 
 .like-btn--own {
   cursor: default;
-  color: var(--color-muted);
+  color: var(--color-text);
   border-style: dashed;
-  background-color: color-mix(in srgb, var(--color-muted) 6%, var(--color-surface));
+  border-color: color-mix(in srgb, var(--color-accent) 30%, var(--color-border));
+  background-color: color-mix(in srgb, var(--color-accent) 8%, var(--color-surface));
 }
 
 .like-btn--own .like-btn__icon {
-  opacity: 0.55;
+  color: var(--color-accent);
+  opacity: 1;
+}
+
+.like-btn--own .like-btn__count {
+  color: var(--color-text);
+  font-weight: 700;
 }
 
 .like-btn__hint {
@@ -76,7 +79,32 @@
   height: 1rem;
 }
 
+.like-btn--liked .like-btn__icon {
+  animation: pop-in 0.35s var(--ease-out);
+}
+
+.like-btn:active:not(:disabled) {
+  transform: scale(0.94);
+}
+
 .like-btn__count {
   line-height: 1;
   min-width: 1ch;
+}
+
+@media (max-width: 640px) {
+  .like-btn--compact {
+    min-height: 2.75rem;
+    padding: 0.375rem 0.625rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .like-btn--liked .like-btn__icon {
+    animation: none;
+  }
+}
+
+:host:not(:has(.like-btn)) {
+  display: none;
 }

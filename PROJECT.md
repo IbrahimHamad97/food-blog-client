@@ -26,10 +26,11 @@ A personal-but-social food blog where anyone can read reviews and public collect
 | ----- | ------ |
 | Frontend | Angular 21, Tailwind 4, standalone components, signals where helpful |
 | SSR | Express in `src/server.ts` — **host only**, no REST API |
-| Backend | Node 20+, TypeScript, Express 5, Prisma, PostgreSQL |
+| Backend | Node 20+, TypeScript, Express 5, Prisma, PostgreSQL (`food-blog-server`) |
 | Auth | Google Identity Services → ID token → API verifies → JWT session |
 | Validation (API) | Zod |
-| Client HTTP | `provideHttpClient` + auth interceptor (planned) |
+| Client HTTP | `provideHttpClient` + auth interceptor |
+| Media | Cloudinary — signed upload via `UploadsApiService` |
 
 ## Repo layout (target)
 
@@ -56,8 +57,8 @@ Status keys: `[ ]` planned · `[~]` in progress · `[x]` done
 | - | ------- | ------ | --------- | ------ |
 | 1 | Google sign-in / session | — | required for writes | [x] |
 | 2 | Home feed — hero, popular (10), latest reviews (API, paginated) | yes | — | [x] |
-| 3 | Review detail page | yes | — | [x] mock detail with meals |
-| 4 | Create / edit / delete **own** review | — | yes | [~] create via API [x]; detail API+mock; edit/delete [ ] |
+| 3 | Review detail page | yes | — | [x] API + mock fallback for legacy seed ids |
+| 4 | Create / edit / delete **own** review | — | yes | [x] create, edit (`/reviews/:id/edit`), delete with confirm |
 | 5 | User profile (public: name, avatar, their reviews) | yes | — | [ ] |
 | 6 | Collections — create, rename, add/remove reviews; public list if `isPublic` | browse public | owner manages | [ ] |
 | 7 | Collection detail (curated list) | yes if public | — | [ ] |
@@ -67,11 +68,11 @@ Status keys: `[ ]` planned · `[~]` in progress · `[x]` done
 | Path | Component area | Guard | Status |
 | ---- | -------------- | ----- | ------ |
 | `/` | `features/home` | — | [x] |
-| `/reviews/:id` | `features/reviews` | — | [x] mock |
+| `/reviews/:id` | `features/reviews` detail | — | [x] |
 | `/collections` | explainer stub (not global browse) | — | [~] |
 | `/sign-in` | Google sign-in page | — | [x] |
 | `/reviews/new` | post review form (API save) | auth | [x] |
-| `/reviews/:id/edit` | review editor | auth + owner | [ ] |
+| `/reviews/:id/edit` | review editor (same form as create) | auth + owner | [x] |
 | `/collections/:id` | `features/collections` | — | [ ] |
 | `/collections/new` | collection form | auth | [ ] |
 | `/users/:id` | `features/profile` | — | [ ] |
@@ -81,8 +82,8 @@ Status keys: `[ ]` planned · `[~]` in progress · `[x]` done
 
 ```
 src/app/
-├── core/           # auth, interceptors, guards, api base
-├── shared/         # buttons, layout, pipes
+├── core/           # auth, guards, ReviewsApiService, UploadsApiService, mock fallback
+├── shared/         # review-card, tag-multi-select, pagination-bar, likes
 ├── features/
 │   ├── home/
 │   ├── reviews/
@@ -93,7 +94,7 @@ src/app/
 
 ### Home page (`/`) — design spec
 
-**Status:** [x] Built (mock data). UI-only; no backend.
+**Status:** [x] Built — loads from API (`GET /api/reviews`).
 
 **Collections on home:** **No** — collections are user-created lists (e.g. “Chinese food”) built by adding existing reviews. Visitors see them on **that user’s profile**, not on the home page or a global collections feed in v1. Nav “Collections” links to a short explainer stub until profile pages ship.
 
@@ -103,12 +104,12 @@ src/app/
 
 | Section | Layout | Content | Status |
 | ------- | ------ | ------- | ------ |
-| **Hero** | Full width, compact | Tagline + “Write a review” when signed in (mock auth) | [x] |
-| **Fresh picks** | Horizontal scroll (hidden bar, arrows, drag) | 8 newest reviews (`ReviewCard`, carousel layout) | [x] |
-| **Latest reviews** | Vertical grid (1 / 2 / 3 cols) | All mock reviews, newest first | [x] |
+| **Hero** | Full width, compact | Tagline + “Post a review” when signed in | [x] |
+| **Top meals** | Horizontal scroll (arrows, drag; links work) | Top 10 by `likeCount` (`ReviewCard` carousel) | [x] |
+| **Latest reviews** | Vertical grid (1 / 2 / 3 cols) + pagination | 12 per page, `sort=latest` | [x] |
 | ~~Collections spotlight~~ | — | Removed — see collections model below | n/a |
 
-**Card click** → `/reviews/:id` (mock detail page).
+**Card click** → `/reviews/:id`. Cards show up to 2 cuisine/food-type tags + `+N`.
 
 #### Collections model (product)
 
@@ -124,21 +125,22 @@ src/app/
 - 10 reviews with Unsplash food images, ratings, places, authors — `core/data/mock-data.ts`
 - 2 sample collections attached to users for future profile work
 - `MockDataService` — `allReviews`, `freshPicks`, `popularReviews`, `getReviewById`, `addReview`, `adjustLikeCount`
-- `ReviewLikesService` — in-memory mock likes API (no localStorage); `ReviewLikeButton` on cards + detail
+- `ReviewLikesService` — persistent likes via API (`POST`/`DELETE /reviews/:id/like`) with a session override map so all instances of a review stay in sync; `ReviewLikeButton` on cards + detail
 - `normalizeReview` — legacy seed rows get default `meals` / `serviceType`
 
 #### Decisions (closed)
 
 - [x] Home = reviews only (no collections spotlight)
 - [x] Hero: static tagline
-- [x] Fresh picks = top 8 newest; grid shows all (overlap OK)
+- [x] Top meals = popular carousel; latest grid paginated from API
+- [x] Cannot like own review (muted pill, still shows count)
 
 ---
 
 ### V2 (after MVP stable)
 
 - [ ] Search & filters (cuisine tag, rating, place name, **popular / trending / highest rated**)
-- [x] Review likes (mock) — count + toggle when signed in
+- [x] Review likes (persisted) — count + toggle when signed in; backs popular sort
 - [ ] Home feed tabs: latest vs popular (`popularReviews` ready)
 - [ ] Review view counts (server-side increment; deferred)
 - [ ] Bookmarks / favorites on others’ reviews (overlap with likes — pick one product term)
@@ -195,10 +197,11 @@ src/app/
 | `currency` | `USD` \| `QAR` | Meal prices and computed `totalAmount` |
 | `totalAmount` | number \| null | Sum of meal prices when any price set |
 | `nutrition` | object \| null | Optional fields: calories, protein, carbs, fat, fiber, sugar, sodium, saturated fat, allergens, notes |
-| `title`, `body`, `rating`, `cuisineTags`, `imageUrls[]` | — | As before |
-| `likeCount` | number | Public total; mock toggles via `ReviewLikesService` |
+| `title`, `body`, `rating`, `cuisineTags[]`, `foodTypeTags[]`, `imageUrls[]` | — | Tags via seed pickers on form |
+| `likeCount` | number | Public total; persisted server-side via `ReviewLike` rows |
+| `likedByMe` | boolean? | Whether the signed-in viewer liked it (server-computed; absent when anonymous) |
 
-**Image upload:** Cloudinary direct upload (signed via `POST /api/uploads/sign`) → `secure_url` in `imageUrls[]` on create review.
+**Image upload:** Cloudinary direct upload (signed via `POST /api/uploads/sign`) → `secure_url` in `imageUrls[]` on create/update review. `image-upload-grid` uploads on pick.
 
 ## Data model (initial Prisma)
 
@@ -210,23 +213,25 @@ src/app/
 
 ---
 
-## API contract (planned REST)
+## API contract (client ↔ `food-blog-server`)
 
-Base path: `/api` (e.g. `http://localhost:3000/api`). Client uses `apiBaseUrl` in environment.
+Base path: `/api` (e.g. `http://localhost:3000/api`). See [SERVER.md](../food-blog-server/SERVER.md) for full spec.
 
-| Method | Path | Auth | Purpose |
-| ------ | ---- | ---- | ------- |
-| GET | `/health` | — | Smoke test |
-| POST | `/auth/google` | — | Exchange Google ID token for JWT + user DTO |
-| GET | `/auth/me` | JWT | Current user |
-| POST | `/auth/logout` | JWT / cookie | End session |
-| GET | `/reviews` | — | Public list (feed) |
-| GET | `/reviews/:id` | — | Review detail (`likeCount`; `likedByMe` when JWT) |
-| POST | `/reviews/:id/like` | JWT | Like review (idempotent) |
-| DELETE | `/reviews/:id/like` | JWT | Unlike review |
-| POST | `/reviews` | JWT | Create review |
-| PATCH | `/reviews/:id` | JWT owner | Update own review |
-| DELETE | `/reviews/:id` | JWT owner | Delete own review |
+| Method | Path | Auth | Status |
+| ------ | ---- | ---- | ------ |
+| GET | `/health` | — | [x] |
+| POST | `/auth/google` | — | [x] |
+| GET | `/auth/me` | JWT | [x] |
+| POST | `/auth/logout` | JWT | [x] |
+| GET | `/reviews` | — | [x] `sort`, `page`, `limit` |
+| GET | `/reviews/me` | JWT | [x] |
+| GET | `/reviews/:id` | — | [x] |
+| POST | `/reviews` | JWT | [x] |
+| PATCH | `/reviews/:id` | JWT owner | [x] |
+| DELETE | `/reviews/:id` | JWT owner | [x] |
+| POST | `/uploads/sign` | JWT | [x] Cloudinary signature |
+| POST | `/reviews/:id/like` | JWT | [x] persisted; returns `{ likeCount, likedByMe }` |
+| DELETE | `/reviews/:id/like` | JWT | [x] persisted; returns `{ likeCount, likedByMe }` |
 | GET | `/users/:id` | — | Public profile |
 | GET | `/users/:id/reviews` | — | User’s reviews |
 | GET | `/collections/:id` | — if public | Collection + items |
@@ -254,7 +259,7 @@ Base path: `/api` (e.g. `http://localhost:3000/api`). Client uses `apiBaseUrl` i
 | `GOOGLE_CLIENT_ID` | Client env + API `.env` |
 | `JWT_SECRET` | API only |
 | `DATABASE_URL` | API only |
-| Never commit | `.env` — only `.env.example` in repo |
+| Never commit | `.env` / `.env*` on server; local `.env` only (see server README) |
 
 ---
 
@@ -308,12 +313,15 @@ Every new or touched TypeScript file should include:
 | 2026-05-22 | `POST /api/reviews` | Create review in PostgreSQL; client still mock until wired |
 | 2026-05-24 | Post review form (mock) | Visit type dine-in/delivery, meals FormArray, USD/QAR, auto total |
 | 2026-05-23 | Frontend-first; backend after UI sign-off | See `.cursor/plans/food_blog_roadmap_7386f45e.plan.md` |
+| 2026-05-26 | Tag multi-select + Cloudinary uploads | `TagMultiSelect`, `UploadsApiService`, signed browser upload |
+| 2026-05-28 | Edit/delete own review on detail | `PATCH`/`DELETE` API; confirm dialog; `/reviews/:id/edit` |
+| 2026-05-28 | Own-review like UI | Non-interactive pill when `author.id === currentUser` |
 
 ---
 
 ## Out of scope (for now)
 
-- Production deployment (Vercel / Render / Fly)
+- Production deployment (recommended: Neon + Render + Cloudflare Pages — not documented in repo yet)
 - CI/CD pipelines
 - Automated E2E tests (unless requested)
 - Embedding REST API inside `food-blog-client/src/server.ts`

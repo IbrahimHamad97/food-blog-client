@@ -6,6 +6,29 @@ The canonical “what’s done vs planned” list lives in [PROJECT.md](./PROJEC
 
 ## [Unreleased]
 
+### 2026-06-14 — Persistent likes + Phase 1 polish
+
+- Likes now persist via the API (`ReviewLikesService` → `POST`/`DELETE /reviews/:id/like`) with optimistic UI and a session override map; `likedByMe` seeded from the server.
+- Review detail shows a real error state on API failure (instead of "not found").
+- Removed broken author profile link (no `/users/:id` route yet).
+- Dev "Fill sample" buttons hidden in production; removed dead `MockAuthService`.
+- Added `environment.production.ts` + `angular.json` file replacement for prod API URL.
+
+### 2026-05-28 — Edit and delete own reviews
+
+- Review detail: **Edit** → `/reviews/:id/edit`; **Delete** with centered confirm dialog.
+- Form edit mode loads review from API and `PATCH` on save.
+- `ReviewsApiService.updateReview` / `deleteReview`.
+
+### 2026-05-28 — Home cards and likes polish
+
+- Carousel cards navigate to review; tag chips (2 + `+N`); equal card heights.
+- Cannot like own review — muted “Yours” pill with count.
+
+### 2026-05-26 — Tag multi-select UI
+
+- `TagMultiSelect` for cuisines and food types (dropdown + checkmarks + chips).
+
 ### 2026-05-26 — Cloudinary photo uploads
 
 - Review form uploads photos to Cloudinary on pick (signed via API); stores `secure_url` in `imageUrls`.

@@ -32,6 +32,5 @@ export class Footer {
    */
   protected readonly footerLinks: FooterLink[] = [
     { label: 'Home', path: '/' },
-    { label: 'Collections', path: '/collections' },
   ];
 }

@@ -31,11 +31,12 @@ import {
 } from '../../core/utils/review.utils';
 import { RatingStars } from '../../shared/ui/rating-stars/rating-stars';
 import { ReviewLikeButton } from '../../shared/ui/review-like-button/review-like-button';
+import { ReviewBookmarkButton } from '../../shared/ui/review-bookmark-button/review-bookmark-button';
 import { ReviewPhotoGallery } from './review-photo-gallery/review-photo-gallery';
 
 @Component({
   selector: 'app-review-detail-page',
-  imports: [RouterLink, RatingStars, ReviewLikeButton, ReviewPhotoGallery],
+  imports: [RouterLink, RatingStars, ReviewLikeButton, ReviewBookmarkButton, ReviewPhotoGallery],
   templateUrl: './review-detail-page.html',
   styleUrl: './review-detail-page.css',
 })
@@ -58,8 +59,11 @@ export class ReviewDetailPage {
 
   protected readonly loading = signal(false);
   protected readonly review = signal<Review | undefined>(undefined);
+  protected readonly loadError = signal<string | null>(null);
   protected readonly deleting = signal(false);
   protected readonly deleteError = signal<string | null>(null);
+
+  protected readonly isAuthenticated = this.auth.isAuthenticated;
 
   protected readonly isOwner = computed(() => {
     const r = this.review();
@@ -79,15 +83,21 @@ export class ReviewDetailPage {
   private async fetchReview(id: string): Promise<void> {
     if (!id) {
       this.review.set(undefined);
+      this.loadError.set(null);
       this.loading.set(false);
       return;
     }
 
     this.loading.set(true);
     this.review.set(undefined);
+    this.loadError.set(null);
     try {
       const loaded = await this.loadService.loadById(id);
       this.review.set(loaded);
+    } catch (err) {
+      this.loadError.set(
+        apiErrorMessage(err, 'Could not load this review. Please check your connection and try again.'),
+      );
     } finally {
       this.loading.set(false);
     }

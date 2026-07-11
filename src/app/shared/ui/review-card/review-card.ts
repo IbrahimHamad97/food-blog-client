@@ -8,10 +8,12 @@ import { Review } from '../../../core/models/review.model';
 import { reviewDisplayTags, serviceTypeLabel } from '../../../core/utils/review.utils';
 import { RatingStars } from '../rating-stars/rating-stars';
 import { ReviewLikeButton } from '../review-like-button/review-like-button';
+import { ReviewBookmarkButton } from '../review-bookmark-button/review-bookmark-button';
+import { UserAvatar } from '../user-avatar/user-avatar';
 
 @Component({
   selector: 'app-review-card',
-  imports: [RouterLink, RatingStars, DatePipe, ReviewLikeButton],
+  imports: [RouterLink, RatingStars, DatePipe, ReviewLikeButton, ReviewBookmarkButton, UserAvatar],
   templateUrl: './review-card.html',
   styleUrl: './review-card.css',
   host: {

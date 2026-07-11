@@ -67,9 +67,7 @@ export class MockDataService {
       author: {
         id: author.id,
         name: author.name,
-        avatarUrl:
-          author.avatarUrl ??
-          `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(author.name)}`,
+        avatarUrl: author.avatarUrl ?? null,
       },
       publishedAt: new Date().toISOString(),
     };

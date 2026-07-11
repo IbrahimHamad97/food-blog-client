@@ -4,6 +4,13 @@
   [class.review-card--no-media]="!coverImage()"
   [routerLink]="['/reviews', review().id]"
 >
+  <app-review-bookmark-button
+    class="review-card__bookmark"
+    [reviewId]="review().id"
+    [authorId]="review().author.id"
+    [bookmarkedByMe]="review().bookmarkedByMe ?? false"
+    [compact]="true"
+  />
   @if (coverImage(); as src) {
     <div class="review-card__media">
       <img
@@ -42,16 +49,15 @@
         [reviewId]="review().id"
         [authorId]="review().author.id"
         [likeCount]="review().likeCount"
+        [likedByMe]="review().likedByMe ?? false"
         [compact]="true"
       />
     </div>
     <div class="review-card__author">
-      <img
-        class="review-card__avatar"
-        [src]="review().author.avatarUrl"
-        [alt]="''"
-        width="24"
-        height="24"
+      <app-user-avatar
+        [name]="review().author.name"
+        [avatarUrl]="review().author.avatarUrl"
+        size="xs"
       />
       <span>{{ review().author.name }}</span>
     </div>

@@ -5,6 +5,7 @@ import { Component, inject, signal } from '@angular/core';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { AuthService } from '../../core/auth/auth.service';
 import { ThemeService } from '../../core/theme/theme.service';
+import { UserAvatar } from '../../shared/ui/user-avatar/user-avatar';
 
 /** Primary nav item shown in desktop bar and mobile drawer. */
 interface NavLink {
@@ -16,7 +17,7 @@ interface NavLink {
 
 @Component({
   selector: 'app-header',
-  imports: [RouterLink, RouterLinkActive],
+  imports: [RouterLink, RouterLinkActive, UserAvatar],
   templateUrl: './header.html',
   styleUrl: './header.css',
 })
@@ -32,7 +33,6 @@ export class Header {
 
   protected readonly navLinks: NavLink[] = [
     { label: 'Home', path: '/' },
-    { label: 'Collections', path: '/collections' },
     { label: 'Post a review', path: '/reviews/new', authOnly: true },
   ];
 
@@ -41,25 +41,6 @@ export class Header {
 
   protected visibleNavLinks(): NavLink[] {
     return this.navLinks.filter((link) => !link.authOnly || this.isAuthenticated());
-  }
-
-  protected avatarUrl(): string {
-    const user = this.currentUser();
-    if (user?.avatarUrl) {
-      return user.avatarUrl;
-    }
-    return this.fallbackAvatarSeed(user?.name ?? 'guest');
-  }
-
-  /** Swap to generated avatar when Google photo URL fails to load. */
-  protected onAvatarError(event: Event): void {
-    const img = event.target as HTMLImageElement;
-    const name = this.currentUser()?.name ?? 'guest';
-    img.src = this.fallbackAvatarSeed(name);
-  }
-
-  private fallbackAvatarSeed(name: string): string {
-    return `https://api.dicebear.com/7.x/avataaars/svg?seed=${encodeURIComponent(name)}`;
   }
 
   protected toggleMobileMenu(): void {

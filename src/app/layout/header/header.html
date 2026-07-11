@@ -50,13 +50,10 @@
               aria-haspopup="true"
               (click)="toggleUserMenu()"
             >
-              <img
-                class="header__avatar"
-                [src]="avatarUrl()"
-                [alt]="currentUser()!.name + ' avatar'"
-                width="32"
-                height="32"
-                (error)="onAvatarError($event)"
+              <app-user-avatar
+                [name]="currentUser()!.name"
+                [avatarUrl]="currentUser()!.avatarUrl"
+                size="sm"
               />
               <span class="header__user-name">{{ currentUser()!.name }}</span>
               <svg class="header__chevron" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2">

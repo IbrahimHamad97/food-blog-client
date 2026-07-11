@@ -30,6 +30,14 @@
   color: var(--color-accent);
 }
 
+.review-detail__top-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
 .review-detail__owner-actions {
   display: flex;
   flex-wrap: wrap;

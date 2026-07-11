@@ -6,7 +6,6 @@ import { RenderMode, ServerRoute } from '@angular/ssr';
 export const serverRoutes: ServerRoute[] = [
   { path: '', renderMode: RenderMode.Prerender },
   { path: 'sign-in', renderMode: RenderMode.Client },
-  { path: 'collections', renderMode: RenderMode.Prerender },
   { path: 'me', renderMode: RenderMode.Client },
   { path: 'reviews/new', renderMode: RenderMode.Client },
   { path: 'reviews/:id/edit', renderMode: RenderMode.Client },

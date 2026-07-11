@@ -48,8 +48,61 @@
 :root {
   --font-sans: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
   --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --duration-ui: 0.45s;
   --duration-fast: 0.25s;
+}
+
+@keyframes fade-in-up {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes pop-in {
+  0% {
+    transform: scale(1);
+  }
+
+  45% {
+    transform: scale(1.18);
+  }
+
+  100% {
+    transform: scale(1);
+  }
+}
+
+.u-fade-in {
+  animation: fade-in var(--duration-ui) var(--ease-smooth) both;
+}
+
+.u-fade-in-up {
+  animation: fade-in-up var(--duration-ui) var(--ease-out) both;
+}
+
+.u-fade-in-up--delay-1 {
+  animation-delay: 0.08s;
+}
+
+.u-fade-in-up--delay-2 {
+  animation-delay: 0.16s;
 }
 
 *,
@@ -103,5 +156,12 @@ button:active:not(:disabled) {
   :root {
     --duration-ui: 0.01ms;
     --duration-fast: 0.01ms;
+  }
+
+  .u-fade-in,
+  .u-fade-in-up,
+  .u-fade-in-up--delay-1,
+  .u-fade-in-up--delay-2 {
+    animation: none;
   }
 }
