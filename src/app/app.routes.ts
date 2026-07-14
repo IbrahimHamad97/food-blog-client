@@ -9,12 +9,14 @@ import { HomePage } from './features/home/home-page';
 import { ReviewDetailPage } from './features/reviews/review-detail-page';
 import { ReviewFormPage } from './features/reviews/review-form-page';
 import { MeDashboardPage } from './features/me/me-dashboard-page';
+import { UserProfilePage } from './features/users/user-profile-page';
 
 /** Route definitions consumed by `provideRouter` in {@link app.config}. */
 export const routes: Routes = [
   { path: '', component: HomePage, title: "Brho's Food Blog" },
   { path: 'sign-in', component: SignInPage, title: 'Sign in', canActivate: [guestGuard] },
   { path: 'me', component: MeDashboardPage, title: 'My dashboard', canActivate: [authGuard] },
+  { path: 'users/:id', component: UserProfilePage, title: 'Profile' },
   {
     path: 'reviews/new',
     component: ReviewFormPage,

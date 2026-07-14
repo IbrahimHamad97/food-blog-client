@@ -189,8 +189,17 @@
   align-items: center;
   gap: 0.5rem;
   margin-top: auto;
-  padding-top: 0.5rem;
+  padding: 0.5rem 0 0;
+  border: none;
+  background: transparent;
+  font: inherit;
   font-size: 0.8125rem;
   font-weight: 500;
   color: var(--color-text);
+  text-align: left;
+  cursor: pointer;
+}
+
+.review-card__author:hover {
+  color: var(--color-accent);
 }

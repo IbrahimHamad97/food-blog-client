@@ -59,13 +59,18 @@
         [compact]="true"
       />
     </div>
-    <div class="review-card__author">
+    <button
+      type="button"
+      class="review-card__author"
+      [attr.aria-label]="'View profile for ' + review().author.name"
+      (click)="goToAuthor($event)"
+    >
       <app-user-avatar
         [name]="review().author.name"
         [avatarUrl]="review().author.avatarUrl"
         size="xs"
       />
       <span>{{ review().author.name }}</span>
-    </div>
+    </button>
   </div>
 </a>

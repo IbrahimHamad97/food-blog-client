@@ -2,8 +2,8 @@
  * Review tile for home feed and carousels — image, title, place, rating, author.
  */
 import { DatePipe } from '@angular/common';
-import { Component, computed, input } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, computed, inject, input } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { Review } from '../../../core/models/review.model';
 import { reviewDisplayTags, serviceTypeLabel } from '../../../core/utils/review.utils';
 import { RatingStars } from '../rating-stars/rating-stars';
@@ -25,6 +25,8 @@ const PLACEHOLDER_IMAGE = '/Temmie.png';
   },
 })
 export class ReviewCard {
+  private readonly router = inject(Router);
+
   readonly review = input.required<Review>();
 
   /**
@@ -56,5 +58,12 @@ export class ReviewCard {
 
   protected moreTagCount(): number {
     return Math.max(0, reviewDisplayTags(this.review()).length - 2);
+  }
+
+  /** Author chip is nested inside the card link — navigate without opening the review. */
+  protected goToAuthor(event: Event): void {
+    event.preventDefault();
+    event.stopPropagation();
+    void this.router.navigate(['/users', this.review().author.id]);
   }
 }

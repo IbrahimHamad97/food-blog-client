@@ -1,0 +1,56 @@
+@if (profileLoading()) {
+  <p class="user-profile__status">Loading profile…</p>
+} @else if (profileError(); as err) {
+  <div class="user-profile__empty">
+    <p class="user-profile__status user-profile__status--error">{{ err }}</p>
+    <a routerLink="/" class="user-profile__empty-cta">Back to home</a>
+  </div>
+} @else if (profile(); as u) {
+  <div class="user-profile u-fade-in">
+    <header class="user-profile__header u-fade-in-up">
+      <div class="user-profile__avatar-wrap">
+        <app-user-avatar [name]="u.name" [avatarUrl]="u.avatarUrl" size="lg" />
+      </div>
+      <div class="user-profile__text">
+        <p class="user-profile__eyebrow">Profile</p>
+        <h1 class="user-profile__name">{{ u.name }}</h1>
+        <p class="user-profile__meta">
+          {{ u.reviewCount }} {{ u.reviewCount === 1 ? 'review' : 'reviews' }}
+        </p>
+        @if (isSelf()) {
+          <a routerLink="/me" class="user-profile__self-link">Open your dashboard</a>
+        }
+      </div>
+    </header>
+
+    <section class="user-profile__section u-fade-in-up u-fade-in-up--delay-1" aria-labelledby="user-reviews">
+      <div class="user-profile__section-head">
+        <h2 id="user-reviews" class="user-profile__section-title">Reviews</h2>
+        <p class="user-profile__section-desc">Restaurant visits published by {{ u.name }}.</p>
+      </div>
+
+      @if (reviewsLoading()) {
+        <p class="user-profile__status">Loading reviews…</p>
+      } @else if (reviewsError(); as err) {
+        <p class="user-profile__status user-profile__status--error">{{ err }}</p>
+      } @else if (reviews().length === 0) {
+        <div class="user-profile__empty">
+          <p class="user-profile__empty-title">No reviews yet</p>
+          <p class="user-profile__empty-hint">This person hasn’t published any reviews.</p>
+        </div>
+      } @else {
+        <div class="user-profile__review-grid">
+          @for (review of reviews(); track review.id) {
+            <app-review-card [review]="review" layout="grid" />
+          }
+        </div>
+        <app-pagination-bar
+          [page]="reviewsPage()"
+          [totalPages]="reviewsTotalPages()"
+          [disabled]="reviewsLoading()"
+          (pageChange)="onReviewsPageChange($event)"
+        />
+      }
+    </section>
+  </div>
+}

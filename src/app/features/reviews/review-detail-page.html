@@ -294,7 +294,13 @@
       <p class="review-detail__body">{{ r.body }}</p>
       <footer class="review-detail__byline">
         <span class="review-detail__byline-label">Written by</span>
-        <span class="review-detail__author">{{ r.author.name }}</span>
+        <a
+          class="review-detail__author"
+          [routerLink]="['/users', r.author.id]"
+          [attr.aria-label]="'View profile for ' + r.author.name"
+        >
+          {{ r.author.name }}
+        </a>
       </footer>
     </section>
 
